@@ -16,12 +16,20 @@ freeCellsT (Tru s r) = length [x | x <- s, freeCellsS x > 0]
 
 checkS :: Stack -> Route -> Palet -> Bool
 checkS s r pal | freeCellsS s == 0 = False
-                     | netS s + netP pal > 10 = False
-                     | holdsS s pal r == False = False
-                     | otherwise = True
+               | netS s + netP pal > 10 = False
+               | holdsS s pal r == False = False
+               | otherwise = True
+
+findS :: Truck -> Palet -> Int -> Int
+findS (Tru s r) pal i | null s = -1
+                      | checkS (s !! i) r pal = i
+                      | otherwise = findS (Tru s r) pal (i+1) 
 
 loadT :: Truck -> Palet -> Truck      -- carga un palet en el camion
-loadT (Tru s r) pal = Tru (stackS (head [x | x <- s, checkS x r pal]) pal) r
+loadT (Tru s r) pal | newS_i == -1 = (Tru s r)
+                    | otherwise = Tru ([x | (x, i) <- zip s [0..] , newS_i /= i]) r
+                    where 
+                      newS_i = findS (Tru s r) pal 0
 
 
 unloadT :: Truck -> String -> Truck   -- responde un camion al que se le han descargado los paletes que podían descargarse en la ciudad
