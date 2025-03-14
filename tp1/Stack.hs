@@ -20,9 +20,8 @@ netS :: Stack -> Int                      -- responde el peso neto de los palete
 netS (Sta p c) = sum([netP x | x <- p])
 
 holdsS :: Stack -> Palet -> Route -> Bool -- indica si la pila puede aceptar el palet considerando las ciudades en la ruta
-holdsS (Sta p c) pal r | 
-                       |elem (destinationP pal) (destinationsR r) /= True = False
-                        --chequeo de si esta vacio, en ese caso que lo meta
+holdsS (Sta p c) pal r | elem (destinationP pal) (destinationsR r)  /= True = False
+                       | null p = True --chequeo de si esta vacio, en ese caso que lo meta
                        | inOrderR r (destinationP pal) (destinationP(last p)) = True
                        | otherwise = False
 

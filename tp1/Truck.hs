@@ -11,7 +11,7 @@ newT :: Int -> Int -> Route -> Truck  -- construye un camion según una cantidad
 newT amount height route = Tru (replicate amount (newS height)) route
 
 freeCellsT :: Truck -> Int            -- responde la celdas disponibles en el camion
-freeCellsT (Tru s r) = length [x | x <- s, freeCellsS x > 0]
+freeCellsT (Tru s r) = length [x | x <- s, (freeCellsS x > 0 && netS x < 10)] --VER ESTOO, EN BASE A QUE DISPONIBLE??
 
 
 checkS :: Stack -> Route -> Palet -> Bool

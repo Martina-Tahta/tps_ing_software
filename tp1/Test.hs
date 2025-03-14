@@ -45,4 +45,10 @@ testStack = and [
 
 testTruck :: Bool
 -- casos bordes:
--- 
+--  freeCellsS --> de 0 cuando recien creas truck
+--  loadT --> ver caso donde no hay stack para meter el palet ==> devuele mismo truck
+--          esto inculye caso donde no hay stacks en eltruck todavia
+--  loadT --> ver caso de stack vacio (que sepa meterlo en uno vacio)
+--  loadT y checkS --> ver que todos los casos agarrados en checkS se manejen bien
+--  unloadT --> ver que los casos que agarra pop se manejen bien ==> que si no esta la ciudad se devuelva el mismo palet
+--                  esto es == a que no cambie el peso de el stack o truck si pasa con todos
