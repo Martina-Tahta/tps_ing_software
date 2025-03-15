@@ -3,36 +3,63 @@ import Stack
 import Route
 import Truck
 
+import Control.Exception
+import System.IO.Unsafe
 
+
+-- NO SE SI ESTA FUNC ESTA EN LO IMPORTADO O LO TENEMOS Q DEFINIR ACA
+testF :: Show a => a -> Bool
+testF action = unsafePerformIO $ do
+    result <- tryJust isException (evaluate action)
+    return $ case result of
+        Left _ -> True
+        Right _ -> False
+    where
+        isException :: SomeException -> Maybe ()
+        isException _ = Just ()
+
+
+pal = newP "bs as" 3
 testPalet :: Bool
 testPalet = and [
-    destinationP (newP "bs as" 3) == "bs as",
-    destinationP (newP "bs as" 3) /= "bs a",
-    netP (newP "bs as" 3) == 3,
-    netP (newP "bs as" 3) /= 2
+    testF (newP "bs as" 3),
+    destinationP (pal) == "bs as",
+    destinationP (pal) /= "bs a",
+    netP (pal) == 3,
+    netP (pal) /= 2
     ] == True
 
-
+route = newR ["a", "b", "c", "d"]
 testRoute :: Bool
 testRoute = and [
-    destinationsR (newR ["a", "b", "c", "d"]) == ["a", "b", "c", "d"],
-    elem "c" (destinationsR (newR ["a", "b", "c", "d"])) == True,
-    inOrderR (newR ["a", "b", "c", "d"]) "a" "b" == True,
-    inOrderR (newR ["a", "b", "c", "d"]) "b" "a" /= True,
-    inOrderR (newR ["a", "b", "c", "d"]) "h" "j" /= True, --ninguno esta en la lista
-    inOrderR (newR ["a", "b", "c", "d"]) "a" "j" == True, --solo el primero esta en la lista
-    inOrderR (newR ["a", "b", "c", "d"]) "h" "b" /= True --solo el segundo esta en la lista
-    -- casos borde:
+    testF(newR ["a", "b", "c", "d"]),
+    destinationsR (route) == ["a", "b", "c", "d"],
+    inRouteR route "c" == True,
+    inRouteR route "r" == False,
+    inOrderR (route) "a" "b" == True,
+    inOrderR (route) "b" "a" /= True,
+    inOrderR (route) "h" "j" /= True, --ninguno esta en la lista
+    inOrderR (route) "a" "j" == True, --solo el primero esta en la lista
+    inOrderR (route) "h" "b" /= True --solo el segundo esta en la lista
+    ] == True
+-- casos borde:
     --  una no esta en la lista
     --  ninguna esta
     --  si te pasan el mismo lugar
-    ] == True
+
+
+stack1 = newS 1
+stack3 = newS 3
 
 testStack :: Bool
 testStack = and [
-    freeCellsS (newS 3) == 3,
-    netS (newS 3) == 0,
-    freeCellsS (stackS (newS 1) (newP "a" 2)) == 0
+    testF (newS 3),
+    freeCellsS (stack3) == 3,
+    netS (stack3) == 0,
+    testF(stackS stack1 pal),
+    freeCellsS (stack1) == 0,
+    testF(stackS stack1 pal)
+    netS (stack1) == 3, -- ver que lo devuelva igual en el stack en el caso donde no tiene mas lugar en el stack
     
     ] == True
     -- casos borde:
