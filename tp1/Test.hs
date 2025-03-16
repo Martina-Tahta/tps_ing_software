@@ -81,13 +81,12 @@ testTruck = and [
     testF (unloadT truck2 "bs as"),
     netT truck3 == 0,  
     freeCellsT truck3 == 3, 
-    testF (findS truck1 pal 0 == 0 || findS truck1 pal 0 == -1) 
-    where
-        truck1 = newT 3 2 route
-        truck2 = loadT truck1 pal
-        truck3 = unloadT truck2 "bs as"
+    testF (findS truck1 pal 0 == 0 || findS truck1 pal 0 == -1)
     ] == True
-
+  where
+    truck1 = newT 3 2 route
+    truck2 = loadT truck1 pal
+    truck3 = unloadT truck2 "bs as"
 
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
