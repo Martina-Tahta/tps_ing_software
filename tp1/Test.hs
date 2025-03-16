@@ -71,6 +71,24 @@ testStack = and [
     --  popS --> cuando stack esta vacio
 
 testTruck :: Bool
+testTruck = and [
+    testF (newT 3 2 route),
+    length (freeCellsT truck1) == 3,  
+    netT truck1 == 0,
+    testF (loadT truck1 pal),
+    netT truck2 == 3, 
+    freeCellsT truck2 == 2,
+    testF (unloadT truck2 "bs as"),
+    netT truck3 == 0,  
+    freeCellsT truck3 == 3, 
+    testF (findS truck1 pal 0 == 0 || findS truck1 pal 0 == -1) 
+    where
+        truck1 = newT 3 2 route
+        truck2 = loadT truck1 pal
+        truck3 = unloadT truck2 "bs as"
+    ] == True
+
+
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
 --  loadT --> ver caso donde no hay stack para meter el palet ==> devuele mismo truck
