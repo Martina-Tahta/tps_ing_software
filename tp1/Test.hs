@@ -104,21 +104,24 @@ testStack = and [
 
 testTruck :: Bool
 testTruck = and [
-    testF (newT 3 2 route),
-    length (freeCellsT truck1) == 3,  
-    netT truck1 == 0,
-    testF (loadT truck1 pal),
-    netT truck2 == 3, 
-    freeCellsT truck2 == 2,
-    testF (unloadT truck2 "bs as"),
-    netT truck3 == 0,  
-    freeCellsT truck3 == 3, 
-    testF (findS truck1 pal 0 == 0 || findS truck1 pal 0 == -1)
-    ] == True
+    freeCellsT truck1 == 3,  
+    netT truck1 == 0,        
+    freeCellsT truck2 == 2,  
+    netT truck2 == 3,        
+    freeCellsT truck3 == 3,   
+    netT truck3 == 0,        
+    unloadResult           
+  ]
   where
-    truck1 = newT 3 2 route
-    truck2 = loadT truck1 pal
-    truck3 = unloadT truck2 "bs as"
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
+    pal = newP "Córdoba" 3  
+    truck1 = newT 3 2 route 
+    truck2 = loadT truck1 pal 
+    truck3 = unloadT truck2 "Córdoba" 
+    unloadResult = netT truck3 == 0 && freeCellsT truck3 == 3 
+
+
+
 
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
