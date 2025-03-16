@@ -111,7 +111,7 @@ testTruck = and [
     freeCellsT truck3 == 3,   
     netT truck3 == 0,        
     unloadResult           
-  ]
+  ] == True
   where
     route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
     pal = newP "Córdoba" 3  
@@ -119,9 +119,6 @@ testTruck = and [
     truck2 = loadT truck1 pal 
     truck3 = unloadT truck2 "Córdoba" 
     unloadResult = netT truck3 == 0 && freeCellsT truck3 == 3 
-
-
-
 
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
