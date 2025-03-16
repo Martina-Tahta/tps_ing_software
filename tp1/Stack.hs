@@ -14,7 +14,7 @@ freeCellsS (Sta p c) = c - length(p)
 
 stackS :: Stack -> Palet -> Stack         -- apila el palet indicado en la pila
 stackS (Sta p c) pal | freeCellsS (Sta p c) > 0 = (Sta (p ++ [pal]) c)
-                     | otherwise = (Sta p c) --VER ESTO QUE DEVOLVERIA SI NO PUEDE SUMARLO
+                     | otherwise = (Sta p c) 
 
 netS :: Stack -> Int                      -- responde el peso neto de los paletes en la pila
 netS (Sta p c) = sum([netP x | x <- p])

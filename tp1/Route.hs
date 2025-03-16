@@ -1,4 +1,4 @@
-module Route ( Route, newR, destinationsR, inOrderR) where
+module Route ( Route, newR, inRouteR, inOrderR) where
 
 data Route = Rou [ String ] deriving (Eq, Show)
 

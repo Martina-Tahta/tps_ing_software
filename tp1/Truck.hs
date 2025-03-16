@@ -11,7 +11,8 @@ newT :: Int -> Int -> Route -> Truck  -- construye un camion según una cantidad
 newT amount height route = Tru (replicate amount (newS height)) route
 
 freeCellsT :: Truck -> Int            -- responde la celdas disponibles en el camion
-freeCellsT (Tru s r) = length [x | x <- s, (freeCellsS x > 0 && netS x < 10)] --VER ESTOO, EN BASE A QUE DISPONIBLE??
+freeCellsT (Tru s r) = sum [freeCellsS x | x <- s]
+--freeCellsT (Tru s r) = length [x | x <- s, (freeCellsS x > 0 && netS x < 10)] --VER ESTOO, EN BASE A QUE DISPONIBLE??
 
 
 checkS :: Stack -> Route -> Palet -> Bool
@@ -26,7 +27,8 @@ findS (Tru s r) pal i | null s = -1
                       | otherwise = findS (Tru s r) pal (i+1) 
 
 loadT :: Truck -> Palet -> Truck      -- carga un palet en el camion
-loadT (Tru s r) pal | newS_i == -1 = (Tru s r)
+loadT (Tru s r) pal | freeCellsT (Tru s r) == 0 = (Tru s r)
+                    | newS_i == -1 = (Tru s r)
                     | otherwise = Tru ([x | (x, i) <- zip s [0..] , newS_i /= i]) r
                     where 
                       newS_i = findS (Tru s r) pal 0
