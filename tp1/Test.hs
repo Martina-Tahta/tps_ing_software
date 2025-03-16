@@ -102,25 +102,32 @@ testStack = and [
     --          caso de que sean iguales mostrar que funca
     --  popS --> cuando stack esta vacio
 
-
-route2 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
-pal2 = newP "Córdoba" 3  
-truck = newT 3 2 route2 
-truck' = loadT truck pal2 --PROBLEMA EN EL LOAD
-truck'' = unloadT truck' "Córdoba" 
---unloadResult = netT truck'' == 0 && freeCellsT truck'' == 3 
-
 testTruck :: Bool
 testTruck = and [
-    freeCellsT truck == 6,  
-    netT truck == 0,        
-    freeCellsT truck' == 5,  
-    netT truck' == 3,        
-    freeCellsT truck'' == 6,   
-    netT truck'' == 0        
-    --unloadResult,           
+    freeCellsT truck1 == 3,  
+    netT truck1 == 0,        
+    freeCellsT truck2 == 2,  
+    netT truck2 == 3,        
+    freeCellsT truck3 == 3,   
+    netT truck3 == 0,        
+    unloadResult           
   ] == True
-    
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
+    pal = newP "Córdoba" 3  
+    truck1 = newT 3 2 route 
+    truck2 = loadT truck1 pal 
+    truck3 = unloadT truck2 "Córdoba" 
+    unloadResult = netT truck3 == 0 && freeCellsT truck3 == 3 
+
+-- casos para hacer:
+-- testear todo las cosas pero mas por el truck
+-- hacer truck con poco espacio que se llene y tratar de meter otro y ver uqe devuelva el mismo truck
+-- que quede lugar pro no matcheen las rutas
+-- ver casos donde daria mal 
+-- unload ver si tenes que hacerlo en mas de un stack 
+-- ver que llenas un truck y pasas toods los destination y se vaciaron todos (todo estaba bien en otrden)
+-- ver casos bordes de stack (que tenga un stack) para ver si se cumplen
 
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
