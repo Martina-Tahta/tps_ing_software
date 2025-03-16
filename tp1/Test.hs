@@ -102,23 +102,25 @@ testStack = and [
     --          caso de que sean iguales mostrar que funca
     --  popS --> cuando stack esta vacio
 
+
+route2 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
+pal2 = newP "Córdoba" 3  
+truck = newT 3 2 route2 
+truck' = loadT truck pal2 --PROBLEMA EN EL LOAD
+truck'' = unloadT truck' "Córdoba" 
+--unloadResult = netT truck'' == 0 && freeCellsT truck'' == 3 
+
 testTruck :: Bool
 testTruck = and [
-    freeCellsT truck1 == 3,  
-    netT truck1 == 0,        
-    freeCellsT truck2 == 2,  
-    netT truck2 == 3,        
-    freeCellsT truck3 == 3,   
-    netT truck3 == 0,        
-    unloadResult           
+    freeCellsT truck == 6,  
+    netT truck == 0,        
+    freeCellsT truck' == 5,  
+    netT truck' == 3,        
+    freeCellsT truck'' == 6,   
+    netT truck'' == 0        
+    --unloadResult,           
   ] == True
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
-    pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route 
-    truck2 = loadT truck1 pal 
-    truck3 = unloadT truck2 "Córdoba" 
-    unloadResult = netT truck3 == 0 && freeCellsT truck3 == 3 
+    
 
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
