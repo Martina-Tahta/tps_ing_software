@@ -5,6 +5,8 @@ import Truck
 
 import Control.Exception
 import System.IO.Unsafe
+import Debug.Trace (trace)
+
 
 testF :: Show a => a -> Bool --PARA QUE ES ESTOO, NO TENEMOS EXCEPTIONS EN LAS FUNCIONES??
 testF action = unsafePerformIO $ do
@@ -122,48 +124,50 @@ testTruck = and [
 -- Test 2: Test de camión sin espacio
 testNoSpace :: Bool
 testNoSpace = and [
-    freeCellsT truck1 == 0, 
-    netT truck1 == 3,        
-    freeCellsT truck2 == 0,  
-    netT truck2 == 3         
+    freeCellsT truck1 == 5, 
+    netT truck1 == 3,       
+    freeCellsT truck2 == 4,  
+    netT truck2 == 6        
   ]
   where
     route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal1 = newP "Córdoba" 3  
-    pal2 = newP "Mendoza" 2  
-    truck1 = loadT (newT 3 2 route) pal1 
-    truck2 = loadT truck1 pal2 
+    pal1 = newP "Córdoba" 3
+    pal2 = newP "Mendoza" 3
+    truck1 = loadT (newT 3 2 route) pal1
+    truck2 = loadT truck1 pal2
+
 
 -- Test 3: Test de ruta no coincidente
 testRouteMismatch :: Bool
 testRouteMismatch = and [
     freeCellsT truck1 == 6, 
     netT truck1 == 0,       
-    freeCellsT truck2 == 6, 
-    netT truck2 == 0        
+    freeCellsT truck2 == 5,  
+    netT truck2 == 3         
   ]
   where
     route1 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    route2 = newR ["San Juan", "Mendoza", "La Rioja"]
+    route2 = newR ["San Juan", "Mendoza", "La Rioja"]  
     pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route1
-    truck2 = loadT truck1 pal
+    truck1 = newT 3 2 route1  
+    truck2 = loadT truck1 pal 
+
 
 -- Test 4: Test de descarga exitosa
 testUnload :: Bool
 testUnload = and [
-    freeCellsT truck1 == 6,  
-    netT truck1 == 0,        
+    freeCellsT truck1 == 5,  
+    netT truck1 == 3,        
     freeCellsT truck2 == 6,  
-    netT truck2 == 0       
+    netT truck2 == 0        
   ]
   where
     route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal = newP "Córdoba" 3  
-    truck1 = loadT (newT 3 2 route) pal 
-    truck2 = unloadT truck1 "Córdoba" 
-
-    
+    pal1 = newP "Córdoba" 3  
+    truck1 = loadT (newT 3 2 route) pal1
+    truck2 = unloadT truck1 "Córdoba"  
+  
+  
 -- Test 5: Test de bahía vacía y casos límite
 testEmptyStack :: Bool
 testEmptyStack = and [
@@ -178,13 +182,61 @@ testEmptyStack = and [
     truck1 = newT 3 2 route
     truck2 = loadT truck1 pal 
 
+-- Test 6: Test de camión lleno y sin espacio para más pallets
+testTruckFull :: Bool
+testTruckFull = and [
+    freeCellsT truck1 == 5,  
+    netT truck1 == 3,        
+    freeCellsT truck2 == 4,  
+    netT truck2 == 5         
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal1 = newP "Córdoba" 3  
+    pal2 = newP "Mendoza" 2  
+    truck1 = loadT (newT 3 2 route) pal1   
+    truck2 = loadT truck1 pal2           
+
+
+-- Test 7: Test de stack vacío antes de cargar un pallet
+testEmptyStackBeforeLoad :: Bool
+testEmptyStackBeforeLoad = and [
+    freeCellsT truck2 == 5,  
+    netT truck2 == 3         
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal = newP "Córdoba" 3  
+    truck1 = newT 3 2 route 
+    truck2 = loadT truck1 pal
+
+
+-- Test 8: Test de descarga en varias bahías
+testUnloadMultipleStacks :: Bool
+testUnloadMultipleStacks = and [
+    freeCellsT truck4 == 6,  
+    netT truck4 == 0         
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal1 = newP "Córdoba" 3  
+    pal2 = newP "Rosario" 2  
+    truck1 = loadT (newT 3 2 route) pal1  
+    truck2 = loadT truck1 pal2 
+    truck3 = unloadT truck2 "Córdoba" 
+    truck4 = unloadT truck3 "Rosario" 
+
+
 allTestTruck :: Bool
 allTestTruck = and [
     testTruck,
-    testNoSpace,
+   testNoSpace,
     testRouteMismatch,
     testUnload,
-    testEmptyStack
+    testEmptyStack,
+    testTruckFull,
+    testEmptyStackBeforeLoad,
+    testUnloadMultipleStacks
   ]
 
 -- casos para hacer:
