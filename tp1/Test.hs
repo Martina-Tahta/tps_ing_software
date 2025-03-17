@@ -102,23 +102,90 @@ testStack = and [
     --          caso de que sean iguales mostrar que funca
     --  popS --> cuando stack esta vacio
 
+
 testTruck :: Bool
 testTruck = and [
-    freeCellsT truck1 == 3,  
-    netT truck1 == 0,        
-    freeCellsT truck2 == 2,  
-    netT truck2 == 3,        
-    freeCellsT truck3 == 3,   
-    netT truck3 == 0,        
-    unloadResult           
-  ] == True
+    freeCellsT truck1 == 6,  
+    netT truck1 == 0,       
+    freeCellsT truck2 == 5,  
+    netT truck2 == 3,       
+    freeCellsT truck3 == 6,  
+    netT truck3 == 0         
+  ]
   where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"] 
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
     pal = newP "Córdoba" 3  
     truck1 = newT 3 2 route 
-    truck2 = loadT truck1 pal 
+    truck2 = loadT truck1 pal
     truck3 = unloadT truck2 "Córdoba" 
-    unloadResult = netT truck3 == 0 && freeCellsT truck3 == 3 
+
+-- Test 2: Test de camión sin espacio
+testNoSpace :: Bool
+testNoSpace = and [
+    freeCellsT truck1 == 0, 
+    netT truck1 == 3,        
+    freeCellsT truck2 == 0,  
+    netT truck2 == 3         
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal1 = newP "Córdoba" 3  
+    pal2 = newP "Mendoza" 2  
+    truck1 = loadT (newT 3 2 route) pal1 
+    truck2 = loadT truck1 pal2 
+
+-- Test 3: Test de ruta no coincidente
+testRouteMismatch :: Bool
+testRouteMismatch = and [
+    freeCellsT truck1 == 6, 
+    netT truck1 == 0,       
+    freeCellsT truck2 == 6, 
+    netT truck2 == 0        
+  ]
+  where
+    route1 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    route2 = newR ["San Juan", "Mendoza", "La Rioja"]
+    pal = newP "Córdoba" 3  
+    truck1 = newT 3 2 route1
+    truck2 = loadT truck1 pal
+
+-- Test 4: Test de descarga exitosa
+testUnload :: Bool
+testUnload = and [
+    freeCellsT truck1 == 6,  
+    netT truck1 == 0,        
+    freeCellsT truck2 == 6,  
+    netT truck2 == 0       
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal = newP "Córdoba" 3  
+    truck1 = loadT (newT 3 2 route) pal 
+    truck2 = unloadT truck1 "Córdoba" 
+
+    
+-- Test 5: Test de bahía vacía y casos límite
+testEmptyStack :: Bool
+testEmptyStack = and [
+    freeCellsT truck1 == 6,
+    netT truck1 == 0,       
+    freeCellsT truck2 == 5, 
+    netT truck2 == 3         
+  ]
+  where
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal = newP "Córdoba" 3  
+    truck1 = newT 3 2 route
+    truck2 = loadT truck1 pal 
+
+allTestTruck :: Bool
+allTestTruck = and [
+    testTruck,
+    testNoSpace,
+    testRouteMismatch,
+    testUnload,
+    testEmptyStack
+  ]
 
 -- casos para hacer:
 -- testear todo las cosas pero mas por el truck
