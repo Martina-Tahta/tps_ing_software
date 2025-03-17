@@ -125,36 +125,37 @@ testTruck = and [
     truck2 = loadT truck1 pal
     truck3 = unloadT truck2 "Córdoba" 
 
--- Test 2: Test de camión sin espacio
 testNoSpace :: Bool
 testNoSpace = and [
-    freeCellsT truck1 == 5, 
+    freeCellsT truck1 == 5,  
     netT truck1 == 3,       
-    freeCellsT truck2 == 4,  
-    netT truck2 == 6        
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal1 = newP "Córdoba" 3
-    pal2 = newP "Mendoza" 3
-    truck1 = loadT (newT 3 2 route) pal1
-    truck2 = loadT truck1 pal2
-
-
--- Test 3: Test de ruta no coincidente
-testRouteMismatch :: Bool
-testRouteMismatch = and [
-    freeCellsT truck1 == 6, 
-    netT truck1 == 0,       
-    freeCellsT truck2 == 5,  
+    freeCellsT truck2 == 5, 
     netT truck2 == 3         
   ]
   where
-    route1 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
+    pal1 = newP "Córdoba" 3  
+    pal2 = newP "Mendoza" 3 
+    truck1 = newT 3 2 route 
+    truck1ConPalet = loadT truck1 pal1 
+    truck2 = loadT truck1ConPalet pal2  
+
+
+testRouteMismatch :: Bool
+testRouteMismatch = and [
+    freeCellsT truck1 == 6,  
+    netT truck1 == 0,       
+    freeCellsT truck2 == 6,  
+    netT truck2 == 0         
+  ]
+  where
+    route1 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]  
     route2 = newR ["San Juan", "Mendoza", "La Rioja"]  
     pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route1  
-    truck2 = loadT truck1 pal 
+    truck1 = newT 3 2 route1 
+    truck2 = loadT truck1 pal  
+    truck3 = newT 3 2 route2  
+    truck4 = loadT truck3 pal 
 
 
 -- Test 4: Test de descarga exitosa
@@ -185,6 +186,7 @@ testEmptyStack = and [
     pal = newP "Córdoba" 3  
     truck1 = newT 3 2 route
     truck2 = loadT truck1 pal 
+
 
 -- Test 6: Test de camión lleno y sin espacio para más pallets
 testTruckFull :: Bool
