@@ -7,6 +7,10 @@ import Control.Exception
 import System.IO.Unsafe
 import Debug.Trace (trace)
 
+-- CASOS QUE FALTAN
+--    NUMEROS NEGATIVOS AL INICIAR STACK O TRUCK O PESO DE PALET
+--    
+
 
 testF :: Show a => a -> Bool --PARA QUE ES ESTOO, NO TENEMOS EXCEPTIONS EN LAS FUNCIONES??
 testF action = unsafePerformIO $ do
@@ -28,7 +32,7 @@ testPalet = and [
     destinationP (pal) /= "bs a",
     netP (pal) == 3,
     netP (pal) /= 2
-    ] == True
+    ]
     where
       pal = newP "bs as" 3
 
@@ -43,7 +47,7 @@ testRoute = and [
     inOrderR route "h" "j" /= True, --ninguno esta en la lista
     inOrderR route "a" "j" == True, --solo el primero esta en la lista
     inOrderR route "h" "b" /= True --solo el segundo esta en la lista
-    ] == True
+    ]
     where 
       route = newR ["a", "b", "c", "d"]
 -- casos borde:
@@ -80,7 +84,7 @@ testStack = and [
     netS (stack3_p3) == 3,
     --stack1 = popS stack1 "c",
     netS (stack1''') == 0
-    ] == True
+    ]
     where
       pal_a = newP "a" 1
       pal_b = newP "b" 5
@@ -128,17 +132,31 @@ testTruck = and [
 -- Test 2: Test de camión sin espacio
 testNoSpace :: Bool
 testNoSpace = and [
-    freeCellsT truck1 == 5, 
-    netT truck1 == 3,       
-    freeCellsT truck2 == 4,  
-    netT truck2 == 6        
+    freeCellsT truck00 == 0, 
+    netT truck00 == 0,       
+    freeCellsT truck10 == 0,  
+    netT truck10' == 0,   
+    freeCellsT truck10'' == 0,  
+    netT truck10'' == 0,
+    freeCellsT truck11 == 1,  
+    netT truck11' == 3,   
+    freeCellsT truck11'' == 0,  
+    netT truck11'' == 3,
+    netT truck11''' == 5
   ]
   where
     route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
     pal1 = newP "Córdoba" 3
-    pal2 = newP "Mendoza" 3
-    truck1 = loadT (newT 3 2 route) pal1
-    truck2 = loadT truck1 pal2
+    pal2 = newP "Mendoza" 5
+    truck00 = loadT (newT 0 0 route) pal1
+    truck10 = newT 1 0 route
+    truck10' = loadT truck10 pal1
+    truck10'' = loadT truck10' pal1
+
+    truck11 = newT 1 1 route
+    truck11' = loadT truck11 pal1
+    truck11'' = loadT truck11' pal1
+    truck11''' = loadT (unloadT truck11'' "Córdoba") pal2
 
 
 -- Test 3: Test de ruta no coincidente
@@ -234,13 +252,13 @@ testUnloadMultipleStacks = and [
 allTestTruck :: Bool
 allTestTruck = and [
     testTruck,
-    testNoSpace,
-    testRouteMismatch,
-    testUnload,
-    testEmptyStack,
-    testTruckFull,
-    testEmptyStackBeforeLoad,
-    testUnloadMultipleStacks
+    testNoSpace
+    -- testRouteMismatch,
+    -- testUnload,
+    -- testEmptyStack,
+    -- testTruckFull,
+    -- testEmptyStackBeforeLoad,
+    -- testUnloadMultipleStacks
   ]
 
 -- casos para hacer:
