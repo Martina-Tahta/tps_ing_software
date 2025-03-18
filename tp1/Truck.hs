@@ -8,8 +8,8 @@ import Route
 data Truck = Tru [Stack] Route deriving (Eq, Show)
 
 newT :: Int -> Int -> Route -> Truck  -- construye un camion según una cantidad de bahias, la altura de las mismas y una ruta
---newT amount height route = Tru (replicate amount (newS height)) route
-newT amount height route = Tru [newS height | i <- [1..amount]] route
+newT amount height route | (amount < 0) || (height < 0) = error "La cantidad de bahias no puede ser negativa"
+                         | otherwise = Tru [newS height | i <- [1..amount]] route
 
 freeCellsT :: Truck -> Int            -- responde la celdas disponibles en el camion
 freeCellsT (Tru s r) = sum [freeCellsS x | x <- s]
@@ -23,14 +23,14 @@ checkS s r pal | freeCellsS s == 0 = False
                | otherwise = True
 
 findS :: Truck -> Palet -> Int -> Int
-findS (Tru s r) pal i | null s = -1
+findS (Tru s r) pal i | (null s) || (i == length s) = -1
                       | checkS (s !! i) r pal = i
                       | otherwise = findS (Tru s r) pal (i+1) 
 
 loadT :: Truck -> Palet -> Truck      -- carga un palet en el camion
 loadT (Tru s r) pal | freeCellsT (Tru s r) == 0 = (Tru s r) --ver si hay celdas disponibles
                     | newI == -1 = (Tru s r) --si no se encontro bahia para ponerlo
-                    | otherwise = Tru ([x | (x, i) <- zip s [0..] , newI /= i] ++ [stackS x pal | (x, i) <- zip s [0..] , newI == i]) r
+                    | otherwise = Tru ([x | (x, i) <- zip s [0..] , newI /= i] ++ [stackS (s !! newI) pal]) r 
                     where 
                       newI = findS (Tru s r) pal 0
 

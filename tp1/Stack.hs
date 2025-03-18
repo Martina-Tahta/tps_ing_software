@@ -6,7 +6,8 @@ import Route
 data Stack = Sta [ Palet ] Int deriving (Eq, Show)
 
 newS :: Int -> Stack                      -- construye una Pila con la capacidad indicada 
-newS capacity = Sta [] capacity
+newS capacity | capacity < 0 = error "La capacidad del stack no puede ser negativa"
+              | otherwise = Sta [] capacity
 
 
 freeCellsS :: Stack -> Int                -- responde la celdas disponibles en la pila
@@ -28,5 +29,5 @@ holdsS (Sta p c) pal r | inRouteR r (destinationP pal) == False = False  -- elem
 popS :: Stack -> String -> Stack          -- quita del tope los paletes con destino en la ciudad indicada
 popS (Sta p c) city | null p = (Sta p c)
                     | destinationP(last p) /= city = (Sta p c)
-                    | otherwise = Sta (init p) c
+                    | otherwise = foldl stackS (newS c) [x| x<-p, destinationP x /= city]
 

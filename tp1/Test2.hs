@@ -27,7 +27,8 @@ testF action = unsafePerformIO $ do
 
 testPalet :: Bool
 testPalet = and [
-    --testF (newP "bs as" 3),
+    testF (newP "bs as" (-3)),
+    testF (newP "bs as" 0),
     destinationP (pal) == "bs as",
     destinationP (pal) /= "bs a",
     netP (pal) == 3,
@@ -39,7 +40,6 @@ testPalet = and [
 
 testRoute :: Bool
 testRoute = and [
-    --testF(newR ["a", "b", "c", "d"]),
     inRouteR route "c" == True,
     inRouteR route "r" == False,
     inOrderR route "a" "b" == True,
@@ -59,30 +59,22 @@ testRoute = and [
 
 testStack :: Bool
 testStack = and [
-    --testF (newS 3),
+    testF (newS (-3)),
     freeCellsS (stack3) == 3,
     netS (stack3) == 0,
-    --stack1 = stackS stack1 pal_c,
     freeCellsS (stack1') == 0,
-    --stack1 = stackS stack1 pal_c
     netS (stack1'') == 3, -- ver que lo devuelva igual en el stack en el caso donde no tiene mas lugar en el stack
     holdsS stack3 pal_a route == True, --si el stack esta vacio ==> puede agregar pal
-    --stack3 = stackS stack3 pal_c, --si el stack esta vacio ==> agrega pal
     netS (stack3') == 3,
     holdsS stack3' pal_a route == True, --estee
     holdsS stack3' pal_h route == False,
     holdsS stack3' pal_d route == False,
     holdsS stack3' pal_c route == True, -- caso de que sean iguales mostrar que funca
-    --stack3 = stackS stack3 pal_a,
     holdsS stack3'' pal_c route == False,
     netS (stack3'') == 4,
-    --stack3 = popS stack3 "h",
     netS (stack3_p1) == 4,
-    --stack3 = popS stack3 "c",
     netS (stack3_p2) == 4,
-    --stack3 = popS stack3 "a",
     netS (stack3_p3) == 3,
-    --stack1 = popS stack1 "c",
     netS (stack1''') == 0
     ]
     where
@@ -113,8 +105,11 @@ testStack = and [
     --  popS --> cuando stack esta vacio
 
 
-testTruck :: Bool
-testTruck = and [
+testTruckCreation :: Bool
+testTruckCreation = and [
+    testF(newT (-1) 1 route),
+    testF(newT 1 (-1) route),
+    testF(newT (-1) (-1) route),
     freeCellsT truck1 == 6,  
     netT truck1 == 0,       
     freeCellsT truck2 == 5,  
@@ -129,16 +124,19 @@ testTruck = and [
     truck2 = loadT truck1 pal
     truck3 = unloadT truck2 "Córdoba" 
 
--- Test 2: Test de camión sin espacio
+-- Test 2: Palet no entra en ningun bahia por capacidad
 testNoSpace :: Bool
 testNoSpace = and [
     freeCellsT truck00 == 0, 
-    netT truck00 == 0,       
+    netT truck00 == 0,  
+
     freeCellsT truck10 == 0,  
     netT truck10' == 0,   
     freeCellsT truck10'' == 0,  
     netT truck10'' == 0,
-    freeCellsT truck11 == 1,  
+
+    freeCellsT truck11 == 1, 
+    freeCellsT truck11' == 0,  
     netT truck11' == 3,   
     freeCellsT truck11'' == 0,  
     netT truck11'' == 3,
@@ -149,6 +147,7 @@ testNoSpace = and [
     pal1 = newP "Córdoba" 3
     pal2 = newP "Mendoza" 5
     truck00 = loadT (newT 0 0 route) pal1
+
     truck10 = newT 1 0 route
     truck10' = loadT truck10 pal1
     truck10'' = loadT truck10' pal1
@@ -159,50 +158,92 @@ testNoSpace = and [
     truck11''' = loadT (unloadT truck11'' "Córdoba") pal2
 
 
--- Test 3: Test de ruta no coincidente
-testRouteMismatch :: Bool
-testRouteMismatch = and [
+-- Test 3: Palet no entra en ningun bahia por destino
+testIncorrectRoute :: Bool
+testIncorrectRoute = and [
     freeCellsT truck1 == 6, 
     netT truck1 == 0,       
-    freeCellsT truck2 == 5,  
-    netT truck2 == 3         
+    freeCellsT truck1' == 6,  
+    netT truck1' == 0,
+
+    freeCellsT truck12 == 1, 
+    netT truck12 == 5, 
+    freeCellsT truck21 == 0, 
+    netT truck21 == 8,
+    freeCellsT truck22 == 2, 
+    netT truck22 == 10 
   ]
   where
-    route1 = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    route2 = newR ["San Juan", "Mendoza", "La Rioja"]  
+    route = newR ["San Juan", "Mendoza", "La Rioja"]  
     pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route1  
-    truck2 = loadT truck1 pal 
+    truck1 = newT 3 2 route  
+    truck1' = loadT truck1 pal 
+
+    pal1 = newP "Mendoza" 3  
+    pal2 = newP "San Juan" 5  
+    truck12 = foldl loadT (newT 1 2 route) [pal2, pal1]
+    truck21 = foldl loadT (newT 2 1 route) [pal2, pal1]
+    truck22 = foldl loadT (newT 2 2 route) [pal2, pal2, pal1]
+    
+-- Test 4: Palet no entra en ningun bahia por peso max
+testOverWeightStack :: Bool 
+testOverWeightStack = and [
+    freeCellsT truck == 2,
+    netT truck == 0,       
+    freeCellsT truck' == 1, 
+    netT truck' == 5,
+    freeCellsT truck2 == 1, 
+    netT truck2 == 16           
+  ]
+  where
+    route = newR ["San Juan", "Mendoza", "La Rioja"]  
+    pal1 = newP "San Juan" 4  
+    pal2 = newP "Mendoza" 7 
+    pal3 = newP "La Rioja" 5  
+    pal4 = newP "La Rioja" 11
+
+    truck = loadT (newT 1 2 route) pal4
+    truck' = foldl loadT truck [pal3, pal2]
+    truck2 = foldl loadT (newT 2 2 route) [pal3, pal2, pal1, pal2]
 
 
--- Test 4: Test de descarga exitosa
+-- Test 5: Test de descarga exitosa
 testUnload :: Bool
 testUnload = and [
-    freeCellsT truck1 == 5,  
-    netT truck1 == 3,        
-    freeCellsT truck2 == 6,  
-    netT truck2 == 0        
+    freeCellsT truck == 0,  
+    netT truck == 14,       
+    freeCellsT truck' == 1,  
+    netT truck' == 13,  
+    freeCellsT truck'' == 4,  
+    netT truck'' == 4,   
+    freeCellsT truck''' == 6,  
+    netT truck''' == 0,
+      
+    freeCellsT truck2' == 3,  
+    netT truck2' == 6,  
+    freeCellsT truck2'' == 3,  
+    netT truck2'' == 6, 
+    freeCellsT truck2''_bad == 3,  
+    netT truck2''_bad == 6,  
+    freeCellsT truck2''' == 6,  
+    netT truck2''' == 0       
   ]
   where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal1 = newP "Córdoba" 3  
-    truck1 = loadT (newT 3 2 route) pal1
-    truck2 = unloadT truck1 "Córdoba"  
-  
-  
--- Test 5: Test de bahía vacía y casos límite
-testEmptyStack :: Bool
-testEmptyStack = and [
-    freeCellsT truck1 == 6,
-    netT truck1 == 0,       
-    freeCellsT truck2 == 5, 
-    netT truck2 == 3         
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route
-    truck2 = loadT truck1 pal 
+    route = newR ["San Juan", "Mendoza", "La Rioja"]  
+    pal1 = newP "San Juan" 1  
+    pal2 = newP "Mendoza" 3 
+    pal3 = newP "La Rioja" 2  
+    truck = foldl loadT (newT 3 2 route) [pal3, pal3, pal2, pal2, pal1, pal2]
+    truck' = unloadT truck "San Juan"
+    truck'' = unloadT truck' "Mendoza"
+    truck''' = unloadT truck'' "La Rioja"
+
+    truck2 = foldl loadT (newT 3 2 route) [pal3, pal3, pal1, pal3]
+    truck2' = unloadT truck2 "San Juan"
+    truck2'' = unloadT truck2' "Mendoza"
+    truck2''_bad = unloadT truck2'' "Buenos Aires"
+    truck2''' = unloadT truck2'' "La Rioja"
+
 
 -- Test 6: Test de camión lleno y sin espacio para más pallets
 testTruckFull :: Bool
@@ -220,45 +261,13 @@ testTruckFull = and [
     truck2 = loadT truck1 pal2           
 
 
--- Test 7: Test de stack vacío antes de cargar un pallet
-testEmptyStackBeforeLoad :: Bool
-testEmptyStackBeforeLoad = and [
-    freeCellsT truck2 == 5,  
-    netT truck2 == 3         
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal = newP "Córdoba" 3  
-    truck1 = newT 3 2 route 
-    truck2 = loadT truck1 pal
-
-
--- Test 8: Test de descarga en varias bahías
-testUnloadMultipleStacks :: Bool
-testUnloadMultipleStacks = and [
-    freeCellsT truck4 == 6,  
-    netT truck4 == 0         
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal1 = newP "Córdoba" 3  
-    pal2 = newP "Rosario" 2  
-    truck1 = loadT (newT 3 2 route) pal1  
-    truck2 = loadT truck1 pal2 
-    truck3 = unloadT truck2 "Córdoba" 
-    truck4 = unloadT truck3 "Rosario" 
-
-
 allTestTruck :: Bool
 allTestTruck = and [
-    testTruck,
-    testNoSpace
-    -- testRouteMismatch,
-    -- testUnload,
-    -- testEmptyStack,
-    -- testTruckFull,
-    -- testEmptyStackBeforeLoad,
-    -- testUnloadMultipleStacks
+    testTruckCreation,
+    testNoSpace,
+    testIncorrectRoute,
+    testOverWeightStack,
+    testUnload
   ]
 
 -- casos para hacer:
@@ -273,8 +282,15 @@ allTestTruck = and [
 -- casos bordes:
 --  freeCellsS --> de 0 cuando recien creas truck
 --  loadT --> ver caso donde no hay stack para meter el palet ==> devuele mismo truck
---          esto inculye caso donde no hay stacks en eltruck todavia
 --  loadT --> ver caso de stack vacio (que sepa meterlo en uno vacio)
 --  loadT y checkS --> ver que todos los casos agarrados en checkS se manejen bien
 --  unloadT --> ver que los casos que agarra pop se manejen bien ==> que si no esta la ciudad se devuelva el mismo palet
 --                  esto es == a que no cambie el peso de el stack o truck si pasa con todos
+
+testAll :: Bool
+testAll = and [
+  testPalet,
+  testRoute,
+  testStack,
+  allTestTruck
+  ]
