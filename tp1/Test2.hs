@@ -161,6 +161,9 @@ testNoSpace = and [
 -- Test 3: Palet no entra en ningun bahia por destino
 testIncorrectRoute :: Bool
 testIncorrectRoute = and [
+    freeCellsT truck_no_route' == 1, 
+    netT truck_no_route' == 0,
+
     freeCellsT truck1 == 6, 
     netT truck1 == 0,       
     freeCellsT truck1' == 6,  
@@ -174,8 +177,11 @@ testIncorrectRoute = and [
     netT truck22 == 10 
   ]
   where
-    route = newR ["San Juan", "Mendoza", "La Rioja"]  
+    truck_no_route = newT 1 1 (newR [])
     pal = newP "Córdoba" 3  
+    truck_no_route' = loadT truck_no_route pal
+    
+    route = newR ["San Juan", "Mendoza", "La Rioja"]  
     truck1 = newT 3 2 route  
     truck1' = loadT truck1 pal 
 
