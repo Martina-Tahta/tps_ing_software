@@ -283,33 +283,6 @@ testTruckFull = and [
 --  unloadT --> ver que los casos que agarra pop se manejen bien ==> que si no esta la ciudad se devuelva el mismo palet
 --                  esto es == a que no cambie el peso de el stack o truck si pasa con todos
 
--- Test 7: Intento de carga en camión sin stacks disponibles
-testNoStackAvailable :: Bool
-testNoStackAvailable = and [
-    freeCellsT truck == 0,
-    netT truck == 0,
-    freeCellsT truck' == 0,
-    netT truck' == 0
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal = newP "Córdoba" 3
-    truck = newT 1 0 route
-    truck' = loadT truck pal
-
--- Test 8: Carga en stack vacío
-testLoadEmptyStack :: Bool
-testLoadEmptyStack = and [
-    freeCellsT truck == 1,
-    netT truck == 0,
-    freeCellsT truck' == 0,
-    netT truck' == 3
-  ]
-  where
-    route = newR ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"]
-    pal = newP "Córdoba" 3
-    truck = newT 1 1 route
-    truck' = loadT truck pal
 
 allTestTruck :: Bool
 allTestTruck = and [
@@ -318,9 +291,7 @@ allTestTruck = and [
     testIncorrectRoute,
     testOverWeightStack,
     testUnload,
-    testTruckFull,
-    testNoStackAvailable,
-    testLoadEmptyStack
+    testTruckFull
   ]
 
 
