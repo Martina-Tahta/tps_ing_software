@@ -13,14 +13,9 @@ newT amount height route | (amount < 0) || (height < 0) = error "La cantidad de 
 
 freeCellsT :: Truck -> Int            -- responde la celdas disponibles en el camion
 freeCellsT (Tru s r) = sum [freeCellsS x | x <- s]
---freeCellsT (Tru s r) = length [x | x <- s, (freeCellsS x > 0 && netS x < 10)] --VER ESTOO, EN BASE A QUE DISPONIBLE??
-
 
 checkS :: Stack -> Route -> Palet -> Bool
-checkS s r pal | freeCellsS s == 0 = False
-               | netS s + netP pal > 10 = False
-               | holdsS s pal r == False = False
-               | otherwise = True
+checkS s r pal = (freeCellsS s > 0) && (netS s + netP pal <= 10) && (holdsS s pal r)
 
 findS :: Truck -> Palet -> Int -> Int
 findS (Tru s r) pal i | (null s) || (i == length s) = -1
@@ -28,9 +23,9 @@ findS (Tru s r) pal i | (null s) || (i == length s) = -1
                       | otherwise = findS (Tru s r) pal (i+1) 
 
 loadT :: Truck -> Palet -> Truck      -- carga un palet en el camion
-loadT (Tru s r) pal | freeCellsT (Tru s r) == 0 = (Tru s r) --ver si hay celdas disponibles
-                    | newI == -1 = (Tru s r) --si no se encontro bahia para ponerlo
-                    | otherwise = Tru ([x | (x, i) <- zip s [0..] , newI /= i] ++ [stackS (s !! newI) pal]) r 
+loadT (Tru s r) pal | freeCellsT (Tru s r) == 0 = (Tru s r) 
+                    | newI == -1 = (Tru s r) 
+                    | otherwise = Tru ((take newI s) ++ [stackS (s !! newI) pal] ++ (drop (newI+1) s)) r 
                     where 
                       newI = findS (Tru s r) pal 0
 

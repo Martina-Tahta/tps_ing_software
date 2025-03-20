@@ -50,11 +50,6 @@ testRoute = and [
     ]
     where 
       route = newR ["a", "b", "c", "d"]
--- casos borde:
-    --  una no esta en la lista
-    --  ninguna esta
-    --  si te pasan el mismo lugar
-
 
 
 testStack :: Bool
@@ -66,10 +61,10 @@ testStack = and [
     netS (stack1'') == 3, -- ver que lo devuelva igual en el stack en el caso donde no tiene mas lugar en el stack
     holdsS stack3 pal_a route == True, --si el stack esta vacio ==> puede agregar pal
     netS (stack3') == 3,
-    holdsS stack3' pal_a route == True, --estee
+    holdsS stack3' pal_a route == True, 
     holdsS stack3' pal_h route == False,
     holdsS stack3' pal_d route == False,
-    holdsS stack3' pal_c route == True, -- caso de que sean iguales mostrar que funca
+    holdsS stack3' pal_c route == True, 
     holdsS stack3'' pal_c route == False,
     netS (stack3'') == 4,
     netS (stack3_p1) == 4,
@@ -96,13 +91,6 @@ testStack = and [
       stack3_p1 = popS stack3'' "h"
       stack3_p2 = popS stack3_p1 "c"
       stack3_p3 = popS stack3_p2 "a"
-    -- casos borde:
-    --  stackS --> ver que lo devuelva igual en el stack en el caso donde no tiene mas lugar en el stack
-    --  holdsS --> si el stack esta vacio ==> agrega pal
-    --  holdsS --> ver si el pal que entra tiene destino en la ruta
-    --  holdsS --> casos de inOrderR, lo testeamos para mostrar que no afecta
-    --          caso de que sean iguales mostrar que funca
-    --  popS --> cuando stack esta vacio
 
 
 testTruckCreation :: Bool
@@ -198,6 +186,8 @@ testOverWeightStack = and [
     netT truck == 0,       
     freeCellsT truck' == 1, 
     netT truck' == 5,
+    freeCellsT truck1 == 0, 
+    netT truck1 == 10,
     freeCellsT truck2 == 1, 
     netT truck2 == 16           
   ]
@@ -207,9 +197,11 @@ testOverWeightStack = and [
     pal2 = newP "Mendoza" 7 
     pal3 = newP "La Rioja" 5  
     pal4 = newP "La Rioja" 11
+    pal5 = newP "Mendoza" 6
 
     truck = loadT (newT 1 2 route) pal4
     truck' = foldl loadT truck [pal3, pal2]
+    truck1 = foldl loadT truck [pal5, pal1]
     truck2 = foldl loadT (newT 2 2 route) [pal3, pal2, pal1, pal2]
 
 
@@ -266,23 +258,6 @@ testTruckFull = and [
     truck1 = loadT (newT 3 2 route) pal1   
     truck2 = loadT truck1 pal2           
 
--- casos para hacer:
--- testear todo las cosas pero mas por el truck
--- hacer truck con poco espacio que se llene y tratar de meter otro y ver uqe devuelva el mismo truck
--- que quede lugar pro no matcheen las rutas
--- ver casos donde daria mal 
--- unload ver si tenes que hacerlo en mas de un stack 
--- ver que llenas un truck y pasas toods los destination y se vaciaron todos (todo estaba bien en otrden)
--- ver casos bordes de stack (que tenga un stack) para ver si se cumplen
-
--- casos bordes:
---  freeCellsS --> de 0 cuando recien creas truck
---  loadT --> ver caso donde no hay stack para meter el palet ==> devuele mismo truck
---  loadT --> ver caso de stack vacio (que sepa meterlo en uno vacio)
---  loadT y checkS --> ver que todos los casos agarrados en checkS se manejen bien
---  unloadT --> ver que los casos que agarra pop se manejen bien ==> que si no esta la ciudad se devuelva el mismo palet
---                  esto es == a que no cambie el peso de el stack o truck si pasa con todos
-
 
 allTestTruck :: Bool
 allTestTruck = and [
@@ -302,3 +277,38 @@ testAll = and [
   testStack,
   allTestTruck
   ]
+
+
+-- casos borde:
+    --  una no esta en la lista
+    --  ninguna esta
+    --  si te pasan el mismo lugar
+
+
+
+-- casos borde:
+  --  stackS --> ver que lo devuelva igual en el stack en el caso donde no tiene mas lugar en el stack
+  --  holdsS --> si el stack esta vacio ==> agrega pal
+  --  holdsS --> ver si el pal que entra tiene destino en la ruta
+  --  holdsS --> casos de inOrderR, lo testeamos para mostrar que no afecta
+  --          caso de que sean iguales mostrar que funca
+  --  popS --> cuando stack esta vacio
+
+
+
+-- casos para hacer:
+-- testear todo las cosas pero mas por el truck
+-- hacer truck con poco espacio que se llene y tratar de meter otro y ver uqe devuelva el mismo truck
+-- que quede lugar pro no matcheen las rutas
+-- ver casos donde daria mal 
+-- unload ver si tenes que hacerlo en mas de un stack 
+-- ver que llenas un truck y pasas toods los destination y se vaciaron todos (todo estaba bien en otrden)
+-- ver casos bordes de stack (que tenga un stack) para ver si se cumplen
+
+-- casos bordes:
+--  freeCellsS --> de 0 cuando recien creas truck
+--  loadT --> ver caso donde no hay stack para meter el palet ==> devuele mismo truck
+--  loadT --> ver caso de stack vacio (que sepa meterlo en uno vacio)
+--  loadT y checkS --> ver que todos los casos agarrados en checkS se manejen bien
+--  unloadT --> ver que los casos que agarra pop se manejen bien ==> que si no esta la ciudad se devuelva el mismo palet
+--                  esto es == a que no cambie el peso de el stack o truck si pasa con todos
