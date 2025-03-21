@@ -7,12 +7,9 @@ import Control.Exception
 import System.IO.Unsafe
 import Debug.Trace (trace)
 
--- CASOS QUE FALTAN
---    NUMEROS NEGATIVOS AL INICIAR STACK O TRUCK O PESO DE PALET
---    
 
 
-testF :: Show a => a -> Bool --PARA QUE ES ESTOO, NO TENEMOS EXCEPTIONS EN LAS FUNCIONES??
+testF :: Show a => a -> Bool
 testF action = unsafePerformIO $ do
     result <- tryJust isException (evaluate action)
     return $ case result of
