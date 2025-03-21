@@ -5,7 +5,7 @@ import Truck
 
 import Control.Exception
 import System.IO.Unsafe
-import Debug.Trace (trace)
+
 
 testAll :: Bool
 testAll = and [

@@ -2,7 +2,7 @@ module Route ( Route, newR, inOrderR, inRouteR) where
 
 data Route = Rou [ String ] deriving (Eq, Show)
 
-newR :: [String] -> Route                    -- construye una ruta segun una lista de ciudades
+newR :: [String] -> Route                    -- construye una ruta según una lista de ciudades
 newR destinations = Rou destinations
 
 
