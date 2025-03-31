@@ -1,19 +1,32 @@
 package codigo;
 
+import java.util.ArrayList;
+
 public class Ring {
+    private ArrayList<Object> ringList = new ArrayList<>();
+    private int currentPos = 0;
+    private int count = 0;
+
     public Ring next() {
-        return null;
+        currentPos = (currentPos+1) % count;
+        return this;
     }
 
     public Object current() {
-        return null;
+        return ringList.get(currentPos);
     }
 
     public Ring add( Object cargo ) {
-        return null;
+        ringList.add(currentPos, cargo);
+        count++;
+        return this;
     }
 
     public Ring remove() {
-        return null;
+        if (count == 0) return this;
+        ringList.remove(currentPos);
+        count--;
+        //currentPos = (currentPos) % count;
+        return this;
     }
 }
