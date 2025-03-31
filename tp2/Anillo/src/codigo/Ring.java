@@ -1,3 +1,5 @@
+package codigo;
+
 public class Ring {
     public Ring next() {
         return null;
