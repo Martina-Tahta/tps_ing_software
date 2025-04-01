@@ -1,7 +1,5 @@
 package codigo;
 
-import java.util.ArrayList;
-
 public class Ring {
     private ArrayList<Object> ringList = new ArrayList<>();
     private int currentPos = 0;
@@ -26,7 +24,8 @@ public class Ring {
         if (count == 0) return this;
         ringList.remove(currentPos);
         count--;
-        //currentPos = (currentPos) % count;
+        currentPos = (currentPos) % count;
         return this;
     }
 }
+
