@@ -1,31 +1,41 @@
 package codigo;
 
 public class Ring {
-    private ArrayList<Object> ringList = new ArrayList<>();
-    private int currentPos = 0;
-    private int count = 0;
+    private Ring currentNode;
+    private Object value;
 
     public Ring next() {
-        currentPos = (currentPos+1) % count;
-        return this;
+        if (this.currentNode == null){
+            return this.currentNode.currentNode;
+        }
+        return currentNode;
     }
 
     public Object current() {
-        return ringList.get(currentPos);
+        return currentNode.value;
     }
 
+
     public Ring add( Object cargo ) {
-        ringList.add(currentPos, cargo);
-        count++;
-        return this;
+        Ring newRing = new Ring();
+        newRing.value = cargo;
+
+        if (this.currentNode == null) {
+            newRing.currentNode = newRing;
+            return newRing;
+        } else {
+            newRing.currentNode = this.currentNode;
+            this.currentNode = newRing;
+            return this;
+        }
+
     }
 
     public Ring remove() {
-        if (count == 0) return this;
-        ringList.remove(currentPos);
-        count--;
-        currentPos = (currentPos) % count;
+        if (this.currentNode == this.currentNode.currentNode){
+            return new Ring();
+        }
+        this.currentNode = this.currentNode.currentNode;
         return this;
     }
 }
-
