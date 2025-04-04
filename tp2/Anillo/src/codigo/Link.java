@@ -44,11 +44,11 @@ class OneLink extends Link {
     }
 
     public Link addLink(Object v) {
-        Link newFullLink = new FullLink(this.value);
-        newFullLink.nextLink = this.nextLink;
-        newFullLink.prevLink = this;
+        Link newMultiLink = new MultiLink(this.value);
+        newMultiLink.nextLink = this.nextLink;
+        newMultiLink.prevLink = this;
 
-        this.nextLink = newFullLink;
+        this.nextLink = newMultiLink;
         this.value = v;
         return this;
     }
@@ -58,9 +58,9 @@ class OneLink extends Link {
         newOneLink.nextLink = nextLink.nextLink;
         newOneLink.prevLink = nextLink.prevLink;
 
-        Link newFullLink = new FullLink(this.value);
-        newFullLink.nextLink = newOneLink;
-        newFullLink.prevLink = prevLink;
+        Link newMultiLink = new MultiLink(this.value);
+        newMultiLink.nextLink = newOneLink;
+        newMultiLink.prevLink = prevLink;
         return newOneLink;
     }
 
@@ -72,13 +72,29 @@ class OneLink extends Link {
     }
 }
 
-class FullLink extends Link {
-    public FullLink(Object v) {
+class MultiLink extends Link {
+    public MultiLink(Object v) {
         super(v);
     }
     public Link addLink(Object v) {return this;}
     public Link next() {return this;}
     public Object current() {return this;}
-    public Link removeLink() {return this;}
-    
+    public Link removeLink() {
+        Link newOneLink = new OneLink(nextLink.value);
+        Link newMultiLink = new MultiLink(this.value);
+
+        prevLink.nextLink = nextLink;
+        nextLink.prevLink = prevLink;
+
+        newMultiLink.value = nextLink.value;
+        newMultiLink.nextLink = nextLink.nextLink;
+        newMultiLink.prevLink = nextLink.prevLink;
+
+        newOneLink.value = nextLink.nextLink.value;
+        newOneLink.nextLink = nextLink.nextLink.nextLink;
+        newOneLink.prevLink = nextLink.nextLink.prevLink;
+
+        return nextLink;
+    }
+
 }
