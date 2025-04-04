@@ -9,21 +9,15 @@ public abstract class Link {
         value = v;
     }
 
-    static Link Empty(Object v) {
-        return new EmptyLink(v);
-    }
     public abstract Link addLink(Object cargo);
     public abstract Link removeLink();
     public abstract Link next();
     public abstract Object current();
-
 }
 
 class EmptyLink extends Link {
     public EmptyLink(Object v) {
         super(v);
-        nextLink = null;
-        prevLink = null;
     }
     public Link addLink(Object cargo) {
         Link newOneLink = new OneLink(cargo);
@@ -33,24 +27,22 @@ class EmptyLink extends Link {
     }
 
     public Link next() {
-        return nextLink.nextLink; //solo para que tire assertion, ver como hacer??
-    }//next tira assertion
+        throw new RuntimeException("No se puede hacer next en un anillo vacio"); //solo para que tire assertion, ver como hacer??
+    }
     public Object current() {
-        return nextLink.value;
+        throw new RuntimeException("No hay current en un anillo vacio");
     }
 
     public Link removeLink() {
-        return this;
+        throw new RuntimeException("No hay nada para eliminar en un anillo vacio");
     }
 }
 
 class OneLink extends Link {
     public OneLink(Object v) {
         super(v);
-        nextLink = this;
-        prevLink = this;
     }
-    //public Falso( boolean b) {super();}
+
     public Link addLink(Object v) {
         Link newFullLink = new FullLink(this.value);
         newFullLink.nextLink = this.nextLink;
@@ -88,8 +80,5 @@ class FullLink extends Link {
     public Link next() {return this;}
     public Object current() {return this;}
     public Link removeLink() {return this;}
-
-//    public Link addLink(Object cargo) {
-//
-//    }
+    
 }
