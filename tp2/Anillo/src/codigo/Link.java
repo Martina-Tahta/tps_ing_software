@@ -19,11 +19,12 @@ class EmptyLink extends Link {
     public EmptyLink(Object v) {
         super(v);
     }
+
     public Link addLink(Object cargo) {
         Link newOneLink = new OneLink(cargo);
         newOneLink.nextLink = this;
         newOneLink.prevLink = this;
-        return new OneLink(cargo);
+        return newOneLink;
     }
 
     public Link next() {
@@ -43,29 +44,51 @@ class OneLink extends Link {
         super(v);
     }
 
+//    public Link addLink(Object v) {
+//        Link newMultiLink = new MultiLink(this.value);
+//        newMultiLink.nextLink = this.nextLink;
+//        newMultiLink.prevLink = this;
+//
+//        this.nextLink = newMultiLink;
+//        this.value = v;
+//        return this;
+//    }
     public Link addLink(Object v) {
-        Link newMultiLink = new MultiLink(this.value);
-        newMultiLink.nextLink = this.nextLink;
-        newMultiLink.prevLink = this;
+        MultiLink currentL = new MultiLink(this.value);
+        MultiLink newL = new MultiLink(v);
 
-        this.nextLink = newMultiLink;
-        this.value = v;
-        return this;
+        currentL.nextLink = newL;
+        currentL.prevLink = newL;
+        newL.nextLink = currentL;
+        newL.prevLink = currentL;
+
+            return newL;
     }
 
-    public Link next() {
-        Link newOneLink = new OneLink(nextLink.value);
-        newOneLink.nextLink = nextLink.nextLink;
-        newOneLink.prevLink = nextLink.prevLink;
+//    public Link next() {
+//        Link newOneLink = new OneLink(nextLink.value);
+//        newOneLink.nextLink = nextLink.nextLink;
+//        newOneLink.prevLink = nextLink.prevLink;
+//
+//        Link newMultiLink = new MultiLink(this.value);
+//        newMultiLink.nextLink = newOneLink;
+//        newMultiLink.prevLink = prevLink;
+//        return newOneLink;
+//    }
 
-        Link newMultiLink = new MultiLink(this.value);
-        newMultiLink.nextLink = newOneLink;
-        newMultiLink.prevLink = prevLink;
-        return newOneLink;
+//    public Object current() {
+//        return value;
+//    }
+
+    public Link next() {
+        OneLink next = new OneLink(this.nextLink.value);
+        next.nextLink = this.nextLink.nextLink;
+        next.prevLink = this.nextLink.prevLink;
+        return next;
     }
 
     public Object current() {
-        return value;
+        return new MultiLink(this.value);
     }
     public Link removeLink() {
         return new EmptyLink(null);
