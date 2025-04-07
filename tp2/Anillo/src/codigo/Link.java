@@ -5,9 +5,7 @@ public abstract class Link {
     public Link prevLink;
     public Object value;
 
-    public Link(Object v) {
-        value = v;
-    }
+    public Link(Object v) {value = v;}
 
     public abstract Link addLink(Object cargo);
     public abstract Link removeLink();
@@ -16,15 +14,13 @@ public abstract class Link {
 }
 
 class EmptyLink extends Link {
-    public EmptyLink(Object v) {
-        super(v);
-    }
+    public EmptyLink(Object v) {super(v);}
 
     public Link addLink(Object cargo) {
-        Link newOneLink = new OneLink(cargo);
-        newOneLink.nextLink = this;
-        newOneLink.prevLink = this;
-        return newOneLink;
+        OneLink currentL = new OneLink(cargo);
+        currentL.nextLink = this;
+        currentL.prevLink = this;
+        return currentL;
     }
 
     public Link next() {
@@ -40,55 +36,27 @@ class EmptyLink extends Link {
 }
 
 class OneLink extends Link {
-    public OneLink(Object v) {
-        super(v);
-    }
+    public OneLink(Object v) {super(v);}
 
-//    public Link addLink(Object v) {
-//        Link newMultiLink = new MultiLink(this.value);
-//        newMultiLink.nextLink = this.nextLink;
-//        newMultiLink.prevLink = this;
-//
-//        this.nextLink = newMultiLink;
-//        this.value = v;
-//        return this;
-//    }
     public Link addLink(Object v) {
-        MultiLink currentL = new MultiLink(this.value);
-        MultiLink newL = new MultiLink(v);
+        MultiLink currentL = new MultiLink(v);
+        MultiLink nextL = new MultiLink(this.value);
 
-        currentL.nextLink = newL;
-        currentL.prevLink = newL;
-        newL.nextLink = currentL;
-        newL.prevLink = currentL;
+        currentL.nextLink = nextL;
+        currentL.prevLink = nextL;
 
-            return newL;
+        nextL.nextLink = currentL;
+        nextL.prevLink = currentL;
+
+        return currentL;
     }
-
-//    public Link next() {
-//        Link newOneLink = new OneLink(nextLink.value);
-//        newOneLink.nextLink = nextLink.nextLink;
-//        newOneLink.prevLink = nextLink.prevLink;
-//
-//        Link newMultiLink = new MultiLink(this.value);
-//        newMultiLink.nextLink = newOneLink;
-//        newMultiLink.prevLink = prevLink;
-//        return newOneLink;
-//    }
-
-//    public Object current() {
-//        return value;
-//    }
 
     public Link next() {
-        OneLink next = new OneLink(this.nextLink.value);
-        next.nextLink = this.nextLink.nextLink;
-        next.prevLink = this.nextLink.prevLink;
-        return next;
+        return this;
     }
 
     public Object current() {
-        return new MultiLink(this.value);
+        return this.value;
     }
     public Link removeLink() {
         return new EmptyLink(null);
@@ -96,28 +64,32 @@ class OneLink extends Link {
 }
 
 class MultiLink extends Link {
-    public MultiLink(Object v) {
-        super(v);
+    public MultiLink(Object v) {super(v);}
+
+    public Link addLink(Object v) {
+        MultiLink newL = new MultiLink(v);
+
+        newL.nextLink = this;
+        newL.prevLink = this.prevLink;
+
+        this.prevLink.nextLink = newL;
+        this.prevLink = newL;
+
+        return newL;
     }
-    public Link addLink(Object v) {return this;}
-    public Link next() {return this;}
-    public Object current() {return this;}
+
+    public Link next() {
+        return this.nextLink;
+    }
+
+    public Object current() {
+        return this.value;
+    }
+
     public Link removeLink() {
-        Link newOneLink = new OneLink(nextLink.value);
-        Link newMultiLink = new MultiLink(this.value);
+        this.prevLink.nextLink = this.nextLink;
+        this.nextLink.prevLink = this.prevLink;
 
-        prevLink.nextLink = nextLink;
-        nextLink.prevLink = prevLink;
-
-        newMultiLink.value = nextLink.value;
-        newMultiLink.nextLink = nextLink.nextLink;
-        newMultiLink.prevLink = nextLink.prevLink;
-
-        newOneLink.value = nextLink.nextLink.value;
-        newOneLink.nextLink = nextLink.nextLink.nextLink;
-        newOneLink.prevLink = nextLink.nextLink.prevLink;
-
-        return nextLink;
+        return this.nextLink;
     }
-
 }
