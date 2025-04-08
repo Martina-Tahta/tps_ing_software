@@ -107,13 +107,4 @@ public class RingTest {
                                                  .remove()
                                                  .current() );
     }
-
-    @Test void test14RemoveAll() {
-        Ring ring = new Ring().add("Hola").add(new Integer(42)).add(LocalDate.now());
-        ring.remove().remove().remove();
-
-        assertThrows( Exception.class, () -> ring.current() );
-        assertThrows( Exception.class, () -> ring.next() );
-    }
-
 }

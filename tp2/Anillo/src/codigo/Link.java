@@ -29,9 +29,7 @@ class EmptyLink extends Link {
     public Object current() {
         throw new RuntimeException("No hay current en un anillo vacio");
     }
-
     public Link removeLink(Link link) {
-        //throw new RuntimeException("No hay nada para eliminar en un anillo vacio");
         return new EmptyLink(null);
     }
 }
@@ -66,32 +64,4 @@ class MultiLink extends Link {
         return link.nextLink;
     }
 }
-//
-//class OneLink extends Link {
-//    public OneLink(Object v) {super(v);}
-//
-//    public Link addLink(Object v) {
-//        MultiLink currentL = new MultiLink(v);
-//        MultiLink nextL = new MultiLink(this.value);
-//
-//        currentL.nextLink = nextL;
-//        currentL.prevLink = nextL;
-//
-//        nextL.nextLink = currentL;
-//        nextL.prevLink = currentL;
-//
-//        return currentL;
-//    }
-//
-//    public Link next() {
-//        return this;
-//    }
-//
-//    public Object current() {
-//        return this.value;
-//    }
-//    public Link removeLink() {
-//        return new EmptyLink(null);
-//    }
-//}
 
