@@ -7,8 +7,8 @@ public abstract class Link {
 
     public Link(Object v) {value = v;}
 
-    public abstract Link addLink(Object cargo);
-    public abstract Link removeLink();
+    public abstract Link addLink(Link link, Object cargo);
+    public abstract Link removeLink(Link link);
     public abstract Link next();
     public abstract Object current();
 }
@@ -16,10 +16,10 @@ public abstract class Link {
 class EmptyLink extends Link {
     public EmptyLink(Object v) {super(v);}
 
-    public Link addLink(Object cargo) {
-        OneLink currentL = new OneLink(cargo);
-        currentL.nextLink = this;
-        currentL.prevLink = this;
+    public Link addLink(Link link, Object cargo) {
+        MultiLink currentL = new MultiLink(cargo);
+        currentL.nextLink = currentL;
+        currentL.prevLink = currentL;
         return currentL;
     }
 
@@ -30,35 +30,8 @@ class EmptyLink extends Link {
         throw new RuntimeException("No hay current en un anillo vacio");
     }
 
-    public Link removeLink() {
-        throw new RuntimeException("No hay nada para eliminar en un anillo vacio");
-    }
-}
-
-class OneLink extends Link {
-    public OneLink(Object v) {super(v);}
-
-    public Link addLink(Object v) {
-        MultiLink currentL = new MultiLink(v);
-        MultiLink nextL = new MultiLink(this.value);
-
-        currentL.nextLink = nextL;
-        currentL.prevLink = nextL;
-
-        nextL.nextLink = currentL;
-        nextL.prevLink = currentL;
-
-        return currentL;
-    }
-
-    public Link next() {
-        return this;
-    }
-
-    public Object current() {
-        return this.value;
-    }
-    public Link removeLink() {
+    public Link removeLink(Link link) {
+        //throw new RuntimeException("No hay nada para eliminar en un anillo vacio");
         return new EmptyLink(null);
     }
 }
@@ -66,14 +39,14 @@ class OneLink extends Link {
 class MultiLink extends Link {
     public MultiLink(Object v) {super(v);}
 
-    public Link addLink(Object v) {
+    public Link addLink(Link link, Object v) {
         MultiLink newL = new MultiLink(v);
 
-        newL.nextLink = this;
-        newL.prevLink = this.prevLink;
+        newL.nextLink = link;
+        newL.prevLink = link.prevLink;
 
-        this.prevLink.nextLink = newL;
-        this.prevLink = newL;
+        link.prevLink.nextLink = newL;
+        link.prevLink = newL;
 
         return newL;
     }
@@ -86,10 +59,39 @@ class MultiLink extends Link {
         return this.value;
     }
 
-    public Link removeLink() {
-        this.prevLink.nextLink = this.nextLink;
-        this.nextLink.prevLink = this.prevLink;
+    public Link removeLink(Link link) {
+        link.prevLink.nextLink = link.nextLink;
+        link.nextLink.prevLink = link.prevLink;
 
-        return this.nextLink;
+        return link.nextLink;
     }
 }
+//
+//class OneLink extends Link {
+//    public OneLink(Object v) {super(v);}
+//
+//    public Link addLink(Object v) {
+//        MultiLink currentL = new MultiLink(v);
+//        MultiLink nextL = new MultiLink(this.value);
+//
+//        currentL.nextLink = nextL;
+//        currentL.prevLink = nextL;
+//
+//        nextL.nextLink = currentL;
+//        nextL.prevLink = currentL;
+//
+//        return currentL;
+//    }
+//
+//    public Link next() {
+//        return this;
+//    }
+//
+//    public Object current() {
+//        return this.value;
+//    }
+//    public Link removeLink() {
+//        return new EmptyLink(null);
+//    }
+//}
+
