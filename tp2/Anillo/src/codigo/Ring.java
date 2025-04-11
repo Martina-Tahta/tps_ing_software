@@ -19,13 +19,13 @@ public class Ring {
     }
 
     public Ring add(Object cargo) {
-        currentLink = currentState.addLink(currentLink, cargo);
+        currentLink = currentLink.addLink(cargo);
+        currentState = currentState.pushLink();
         return this;
     }
 
     public Ring remove() {
-        currentLink = currentState.removeLink(currentLink);
-        currentState = currentState.manageState(currentState);
+        currentLink = currentState.popLink(currentLink);
         return this;
     }
 }

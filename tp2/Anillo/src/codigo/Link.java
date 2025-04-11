@@ -6,19 +6,18 @@ public abstract class Link {
     public Object value;
 
     public Link(Object v) {value = v;}
-
-    public abstract Link addLink(Link link, Object cargo);
+    public abstract Link addLink(Object cargo);
     public abstract Link removeLink(Link link);
     public abstract Link next();
     public abstract Object current();
-    public abstract State manageState(State currentState);
 }
 
 class EmptyLink extends Link {
     public EmptyLink(Object v) {super(v);}
 
-    public Link addLink(Link link, Object cargo) {
+    public Link addLink(Object cargo) {
         MultiLink currentL = new MultiLink(cargo);
+
         currentL.nextLink = currentL;
         currentL.prevLink = currentL;
         return currentL;
@@ -27,29 +26,26 @@ class EmptyLink extends Link {
     public Link next() {
         throw new RuntimeException("No se puede hacer next en un anillo vacio"); //solo para que tire assertion, ver como hacer??
     }
+
     public Object current() {
         throw new RuntimeException("No hay current en un anillo vacio");
     }
+
     public Link removeLink(Link link) {
         return new EmptyLink(null);
-    }
-    public State manageState(State currentState) {
-        return new State();
     }
 }
 
 class MultiLink extends Link {
     public MultiLink(Object v) {super(v);}
 
-    public Link addLink(Link link, Object v) {
+    public Link addLink(Object v) {
         MultiLink newL = new MultiLink(v);
 
-        newL.nextLink = link;
-        newL.prevLink = link.prevLink;
-
-        link.prevLink.nextLink = newL;
-        link.prevLink = newL;
-
+        newL.nextLink = this;
+        newL.prevLink = this.prevLink;
+        this.prevLink.nextLink = newL;
+        this.prevLink = newL;
         return newL;
     }
 
@@ -64,11 +60,7 @@ class MultiLink extends Link {
     public Link removeLink(Link link) {
         link.prevLink.nextLink = link.nextLink;
         link.nextLink.prevLink = link.prevLink;
-
         return link.nextLink;
-    }
-    public State manageState(State currentState) {
-        return currentState;
     }
 }
 

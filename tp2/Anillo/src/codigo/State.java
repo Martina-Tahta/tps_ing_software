@@ -8,28 +8,15 @@ public class State {
     public State() {
         stack = new Stack<>();
         stack.push(new EmptyLink(null));
-        stack.push(new EmptyLink(null));
     }
 
-    public Link addLink(Link link, Object cargo) {
-        Link current = stack.peek();
-        Link newCurrent = current.addLink(link, cargo);
-
+    public State pushLink() {
         stack.push(new MultiLink(null));
-        return newCurrent;
+        return this;
     }
 
-    public Link removeLink(Link link) {
+    public Link popLink(Link link) {
         stack.pop();
-        Link current = stack.peek();
-        Link newCurrent = current.removeLink(link);
-
-        return newCurrent;
+        return stack.peek().removeLink(link);
     }
-
-    public State manageState(State currentState) {
-        Link current = stack.peek();
-        return current.manageState(currentState);
-    }
-
 }
