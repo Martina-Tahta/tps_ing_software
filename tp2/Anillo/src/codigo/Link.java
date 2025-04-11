@@ -11,6 +11,7 @@ public abstract class Link {
     public abstract Link removeLink(Link link);
     public abstract Link next();
     public abstract Object current();
+    public abstract State manageState(State currentState);
 }
 
 class EmptyLink extends Link {
@@ -31,6 +32,9 @@ class EmptyLink extends Link {
     }
     public Link removeLink(Link link) {
         return new EmptyLink(null);
+    }
+    public State manageState(State currentState) {
+        return new State();
     }
 }
 
@@ -62,6 +66,9 @@ class MultiLink extends Link {
         link.nextLink.prevLink = link.prevLink;
 
         return link.nextLink;
+    }
+    public State manageState(State currentState) {
+        return currentState;
     }
 }
 

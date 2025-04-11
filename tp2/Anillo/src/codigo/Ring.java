@@ -25,6 +25,7 @@ public class Ring {
 
     public Ring remove() {
         currentLink = currentState.removeLink(currentLink);
+        currentState = currentState.manageState(currentState);
         return this;
     }
 }

@@ -8,6 +8,7 @@ public class State {
     public State() {
         stack = new Stack<>();
         stack.push(new EmptyLink(null));
+        stack.push(new EmptyLink(null));
     }
 
     public Link addLink(Link link, Object cargo) {
@@ -24,6 +25,11 @@ public class State {
         Link newCurrent = current.removeLink(link);
 
         return newCurrent;
+    }
+
+    public State manageState(State currentState) {
+        Link current = stack.peek();
+        return current.manageState(currentState);
     }
 
 }
