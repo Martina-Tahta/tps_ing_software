@@ -17,7 +17,7 @@ class EmptyLink extends Link {
     }
 
     public Link next() {
-        throw new RuntimeException("No se puede hacer next en un anillo vacio"); //solo para que tire assertion, ver como hacer??
+        throw new RuntimeException("No se puede hacer next en un anillo vacio");
     }
 
     public Object current() {
