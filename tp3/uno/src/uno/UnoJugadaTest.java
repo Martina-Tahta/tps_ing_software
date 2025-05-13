@@ -13,28 +13,31 @@ public class UnoJugadaTest {
     private ArrayList<String> mazoChico = new ArrayList<>(
             Arrays.asList("r1", "r2", "r3", "r4")
     );
+    private ArrayList<String> jugadores = new ArrayList<>(
+            Arrays.asList("A", "B", "C")
+    );
 
     @Test
     void test00InicioPartida() {
-        Partida j = new Partida(0, 0);
-        assertEquals("r1", j.iniciarPartida(mazoChico).pit());
+        Partida j = new Partida(0, jugadores, mazoChico);
+        assertEquals("r1", j.iniciarPartida().pit());
     }
 
     @Test
     void test01InicioPartidaCartasJugadores() {
-        Partida j = new Partida(1, 3);
-        assertEquals(3, j.iniciarPartida(mazoChico).getCantJugadores());
-        assertEquals(1, j.getCantCartasJugador(1));
-        assertEquals(1, j.getCantCartasJugador(2));
-        assertEquals(1, j.getCantCartasJugador(3));
-        assertEquals("r4", j.pit());
+        Partida j = new Partida(1, jugadores, mazoChico);
+        assertEquals(3, j.iniciarPartida().getCantJugadores());
+        assertEquals(1, j.getCantCartasJugador("A"));
+        assertEquals(1, j.getCantCartasJugador("B"));
+        assertEquals(1, j.getCantCartasJugador("C"));
+        assertEquals("r1", j.pit());
     }
 
     @Test
     void test02PrimeraCartaTirada() {
-        Partida j = new Partida(1, 3);
-        j.iniciarPartida(mazoChico);
-        assertEquals("r1", j.simularTurnoSiguienteJugador().pit());
+        Partida j = new Partida(1, jugadores, mazoChico);
+        j.iniciarPartida();
+        assertEquals("r2", j.simularTurnoSiguienteJugador().pit());
     }
 
 }

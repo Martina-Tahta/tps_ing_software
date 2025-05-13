@@ -2,8 +2,9 @@ package uno;
 
 import java.util.ArrayList;
 
-public class Jugador {
+public class JugadorUno {
     private ArrayList<String> cartas = new ArrayList<>();
+
 
 
     public void addCarta(String carta) {

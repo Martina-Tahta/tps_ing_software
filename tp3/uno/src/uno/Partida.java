@@ -1,44 +1,49 @@
 package uno;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class Partida {
     private int cartasARepartir;
     private String cartaSuperior;
-    private ArrayList<Jugador> jugadores = new ArrayList<>();
+    private HashMap<String, JugadorUno> jugadores = new HashMap<>();
     private ArrayList<String> mazo;
-    private int siguienteJugador;
+    private String siguienteJugador;
 
-    private void repartirCartaAJugador(Jugador jugador) {
-        String carta = this.mazo.remove(0);
-        jugador.addCarta(carta);
+    public Partida(int cartasIniciales, ArrayList<String> nombresJugadores, ArrayList<String> mazo) {
+        this.cartasARepartir = cartasIniciales;
+        this.instanciarJugadores(nombresJugadores);
+        this.mazo = mazo;
+        this.siguienteJugador = nombresJugadores.get(0);
+    }
+
+    private void instanciarJugadores(ArrayList<String> nombresJugadores) {
+        for (int i=0; i<nombresJugadores.size(); i++) {
+            this.jugadores.put(nombresJugadores.get(i), new JugadorUno());
+        }
+    }
+
+    public Partida iniciarPartida() {
+        this.cartaSuperior = mazo.remove(0);
+        this.repartirCartas();
+        return this;
+    }
+
+    private void repartirCartaAJugador(JugadorUno jugador) {
+        for (int i=0; i<this.cartasARepartir; i++) {
+            String carta = this.mazo.remove(0);
+            jugador.addCarta(carta);
+        }
     }
 
     private void repartirCartas() {
-        for (int i=0; i<this.cartasARepartir; i++) {
-            this.jugadores.stream().forEachOrdered(jugador -> this.repartirCartaAJugador(jugador));
-        }
+        this.jugadores
+                .values()                           // Collection<Jugador>
+                .stream()
+                .forEach(this::repartirCartaAJugador);
     }
 
-    private void instanciarJugadores(int cantJugadores) {
-        for (int i=0; i<cantJugadores; i++) {
-            this.jugadores.add(new Jugador());
-        }
-    }
-
-    public Partida(int cartasIniciales, int cantJugadores) {
-        this.cartasARepartir = cartasIniciales;
-        this.instanciarJugadores(cantJugadores);
-    }
-
-    public Partida iniciarPartida(ArrayList<String> mazo) {
-        //repartir cartas a jugadores segun carasARepartir y cant de jugadores
-        this.mazo = mazo;
-        this.repartirCartas();
-        this.cartaSuperior = mazo.get(0);
-
-        return this;
-    }
 
     public String pit() {
         return this.cartaSuperior;
@@ -48,8 +53,8 @@ public class Partida {
         return this.jugadores.size();
     }
 
-    public int getCantCartasJugador(int i) {
-        return this.jugadores.get(i-1).getCantCartas();
+    public int getCantCartasJugador(String name) {
+        return this.jugadores.get(name).getCantCartas();
     }
 
     public Partida simularTurnoSiguienteJugador() {
