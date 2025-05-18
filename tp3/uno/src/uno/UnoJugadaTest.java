@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -36,27 +37,27 @@ public class UnoJugadaTest {
 
 
     @Test
-    void test00InicioPartida() {
+    void test00_GameStart() {
         UnoGame j = new UnoGame(0, players, smallDeck);
         assertEquals(r1, j.pit());
     }
 
     @Test
-    void test01PrimeraCartaTirada() {
+    void test01_FirstCardPlayed() {
         UnoGame j = new UnoGame(1, players, smallDeck);
         assertEquals("A", j.getCurrentPlayer());
         assertEquals(r2, j.playeNextTurn().pit());
     }
 
     @Test
-    void test02SiguienteJugador() {
+    void test02_NextPlayer() {
         UnoGame j = new UnoGame(1, players, smallDeck);
         assertEquals("B", j.playeNextTurn().getCurrentPlayer());
         assertEquals(r3, j.playeNextTurn().pit());
     }
 
     @Test
-    void test03PrimeraRonda() {
+    void test03_FirstRound() {
         UnoGame j = new UnoGame(1, players, smallDeck);
 
         assertEquals("A", j.getCurrentPlayer());
@@ -72,23 +73,11 @@ public class UnoJugadaTest {
 
         j.playeNextTurn();
         assertEquals("A", j.getCurrentPlayer());
-        assertEquals(r4, j.pit()); // última carta
+        assertEquals(r4, j.pit()); // last card
     }
 
     @Test
-    void test04CambioDeRonda() {
-        UnoGame j = new UnoGame(1, players, smallDeck);
-
-        j.playeNextTurn();
-        j.playeNextTurn();
-        j.playeNextTurn();
-
-        assertEquals("A", j.getCurrentPlayer());
-    }
-
-
-    @Test
-    void test05_cambioDeRonda() {
+    void test04_RoundChange() {
         UnoGame j = new UnoGame(1, players, smallDeck);
 
         j.playeNextTurn();
@@ -99,7 +88,18 @@ public class UnoJugadaTest {
     }
 
     @Test
-    void test06_mismoNumeroDistintoColor() {
+    void test05_RoundChangeDuplicate() {
+        UnoGame j = new UnoGame(1, players, smallDeck);
+
+        j.playeNextTurn();
+        j.playeNextTurn();
+        j.playeNextTurn();
+
+        assertEquals("A", j.getCurrentPlayer());
+    }
+
+    @Test
+    void test06_SameNumberDifferentColor() {
         Card c1 = new NumberColorCard("red", 5);
         Card c2 = new NumberColorCard("blue", 5);
 
@@ -107,13 +107,13 @@ public class UnoJugadaTest {
     }
 
     @Test
-    void test07_lanzarCartaManoVacia() {
+    void test07_ThrowCardEmptyHand() {
         UnoPlayer player = new UnoPlayer("Empty");
         assertThrows(IndexOutOfBoundsException.class, () -> player.throwCard());
     }
 
     @Test
-    void test08_apilarYcompararIgualdad() {
+    void test08_StackAndEquality() {
         WildCard wild1 = new WildCard();
         WildCard wild2 = new WildCard();
 
@@ -127,7 +127,7 @@ public class UnoJugadaTest {
     }
 
     @Test
-    void test09_cambioDeDireccionDelTurno() {
+    void test09_ChangeTurnDirection() {
         TurnDirector turnRight = new TurnDirectorRight();
         TurnDirector turnLeft = turnRight.changeTurnDirection();
 
@@ -138,7 +138,7 @@ public class UnoJugadaTest {
     }
 
     @Test
-    void test10_cicloDeTurnos() {
+    void test10_TurnCycle() {
         ArrayList<String> players = new ArrayList<>(Arrays.asList("P1", "P2", "P3"));
         ArrayList<Card> deck = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -156,7 +156,7 @@ public class UnoJugadaTest {
     }
 
     @Test
-    void test11lanzarCarta() {
+    void test11_ThrowCard() {
         UnoPlayer player = new UnoPlayer("Player1");
         Card card = new NumberColorCard("yellow", 9);
         player.addCard(card);
@@ -166,4 +166,54 @@ public class UnoJugadaTest {
         assertThrows(IndexOutOfBoundsException.class, () -> player.throwCard());
     }
 
+    @Test
+    void test12_CanStackOverVariousCases() {
+        Card red5 = new NumberColorCard("red", 5);
+        Card blue5 = new NumberColorCard("blue", 5);
+        Card red7 = new NumberColorCard("red", 7);
+        Card green7 = new NumberColorCard("green", 7);
+        Card yellow3 = new NumberColorCard("yellow", 3);
+        WildCard wild = new WildCard();
+
+        assertTrue(red5.canStackOver(blue5));
+        assertTrue(red5.canStackOver(red7));
+        assertFalse(red5.canStackOver(yellow3));
+        assertTrue(wild.canStackOver(red7));
+        assertTrue(wild.canStackOver(wild));
+    }
+
+    @Test
+    void test13_TurnDirectionChangeAffectsTurn() {
+        ArrayList<String> players = new ArrayList<>(Arrays.asList("P1", "P2", "P3"));
+        ArrayList<Card> deck = new ArrayList<>();
+        for (int i = 0; i < 10; i++) deck.add(new NumberColorCard("red", i));
+        UnoGame game = new UnoGame(2, players, deck);
+
+        assertEquals("P1", game.getCurrentPlayer());
+        game.playeNextTurn();
+        assertEquals("P2", game.getCurrentPlayer());
+
+        game.changeTurnDirection();
+        game.playeNextTurn();
+        assertEquals("P1", game.getCurrentPlayer());
+    }
+
+    @Test
+    void test14_EqualsWildCard() {
+        WildCard w1 = new WildCard();
+        WildCard w2 = new WildCard();
+        NumberColorCard n1 = new NumberColorCard("red", 7);
+
+        assertTrue(w1.equals(w2));
+        assertFalse(w1.equals(n1));
+    }
+
+    @Test
+    void test15_GetCurrentPlayerDoesNotChangeState() {
+        UnoGame game = new UnoGame(1, players, smallDeck);
+        String player1 = game.getCurrentPlayer();
+        String player2 = game.getCurrentPlayer();
+
+        assertEquals(player1, player2);
+    }
 }

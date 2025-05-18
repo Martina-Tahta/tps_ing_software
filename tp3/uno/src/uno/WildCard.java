@@ -17,4 +17,9 @@ public class WildCard extends Card {
     public boolean equalsWildCard(WildCard wildCard) {
         return true;
     }
+
+    @Override
+    public UnoPlayer applyEffect(UnoGame game) {
+        return game.getTurnDirector().nextPlayer(game.getCurrentPlayerObject());
+    }
 }

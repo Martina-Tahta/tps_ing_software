@@ -61,6 +61,30 @@ public class UnoGame {
         return this;
     }
 
+    public TurnDirector getTurnDirector() {
+        return this.turnDirector;
+    }
+
+    public void setTurnDirector(TurnDirector director) {
+        this.turnDirector = director;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return this.deck;
+    }
+
+    public UnoPlayer getCurrentPlayerObject() {
+        return this.currentPlayer;
+    }
+
+    public void setCurrentPlayer(UnoPlayer player) {
+        this.currentPlayer = player;
+    }
+
+    public void changeTurnDirection() {
+        this.turnDirector = this.turnDirector.changeTurnDirection();
+    }
+
     //    private void repartirCartas() {
 //        this.jugadores
 //                .values()                           // Collection<Jugador>

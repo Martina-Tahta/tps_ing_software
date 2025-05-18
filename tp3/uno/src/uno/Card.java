@@ -13,7 +13,8 @@ public abstract class Card {
     protected boolean equalsSpecialColorCardType(SpecialColorCard specialColorCard) {return false;}
     protected boolean equalsNumberColorCardNumber(NumberColorCard numberColorCard){return false;}
     protected boolean equalsWildCard(WildCard wildCard){return false;}
-
-    //public abstract void effect();
+    public UnoPlayer applyEffect(UnoGame game) {
+        return game.getTurnDirector().nextPlayer(game.getCurrentPlayerObject());
+    }
 }
 

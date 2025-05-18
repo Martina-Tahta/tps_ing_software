@@ -5,4 +5,10 @@ public class ReverseCard extends SpecialColorCard {
         super(color);
         this.type = "reverse";
     }
+
+    @Override
+    public UnoPlayer applyEffect(UnoGame game) {
+        game.setTurnDirector(game.getTurnDirector().changeTurnDirection());
+        return game.getTurnDirector().nextPlayer(game.getCurrentPlayerObject());
+    }
 }
