@@ -3,6 +3,7 @@ package uno;
 import java.util.ArrayList;
 
 public class UnoGame {
+    private boolean finishedGame = false;
     private int initialAmountCards;
     private Card topCard;
     private UnoPlayer currentPlayer;
@@ -23,12 +24,12 @@ public class UnoGame {
 
     private void instancePlayers(ArrayList<String> playerNames) {
         this.currentPlayer = new UnoPlayer(playerNames.get(0));
-        this.dealCards(this.currentPlayer);
+        this.dealNCards(this.currentPlayer, this.initialAmountCards);
         UnoPlayer player = this.currentPlayer;
         for (int i=1; i<playerNames.size(); i++) {
 
             UnoPlayer nextPlayer = new UnoPlayer(playerNames.get(i));
-            this.dealCards(nextPlayer);
+            this.dealNCards(nextPlayer, this.initialAmountCards);
             nextPlayer.setLeftPlayer(player);
             player.setRightPlayer(nextPlayer);
             player = nextPlayer;
@@ -37,10 +38,14 @@ public class UnoGame {
         this.currentPlayer.setLeftPlayer(player);
     }
 
-    private void dealCards(UnoPlayer player) {
-        for (int i = 0; i<this.initialAmountCards; i++) {
-            Card card = this.deck.remove(0);
-            player.addCard(card);
+    private void dealACard(UnoPlayer player) {
+        Card card = this.deck.remove(0);
+        player.addCard(card);
+    }
+
+    public void dealNCards(UnoPlayer player, int n) {
+        for (int i = 0; i<n; i++) {
+            this.dealACard(player);
         }
     }
 
@@ -52,45 +57,41 @@ public class UnoGame {
         return this.currentPlayer.getName();
     }
 
-    public UnoGame playeNextTurn() {
-        Card card = this.currentPlayer.throwCard();
+    public void nextTurn() {
+        this.currentPlayer = this.turnDirector.nextPlayer(this.currentPlayer);
+    }
+
+    public UnoGame playNextTurn() {
+        Card card = this.currentPlayer.throwCard(this.topCard, this);
+        if (this.currentPlayer.getAmountCards()==0) {
+            this.finishedGame = true;
+            return this;
+        }
         if (card!=null) {
             this.topCard = card;
+            card.applyEffect(this);
         }
-        this.currentPlayer = this.turnDirector.nextPlayer(this.currentPlayer);
+        else {
+            this.nextTurn();
+        }
         return this;
     }
 
-    public TurnDirector getTurnDirector() {
-        return this.turnDirector;
-    }
-
-    public void setTurnDirector(TurnDirector director) {
-        this.turnDirector = director;
-    }
-
-    public ArrayList<Card> getDeck() {
-        return this.deck;
+    public void changeTurnDirector() {
+        this.turnDirector = this.turnDirector.changeTurnDirection();
     }
 
     public UnoPlayer getCurrentPlayerObject() {
         return this.currentPlayer;
     }
 
-    public void setCurrentPlayer(UnoPlayer player) {
-        this.currentPlayer = player;
-    }
-
     public void changeTurnDirection() {
         this.turnDirector = this.turnDirector.changeTurnDirection();
     }
 
-    //    private void repartirCartas() {
-//        this.jugadores
-//                .values()                           // Collection<Jugador>
-//                .stream()
-//                .forEach(this::repartirCartaAJugador);
-//    }
+    public boolean gameEnded() {
+        return this.finishedGame;
+    }
 
 }
 

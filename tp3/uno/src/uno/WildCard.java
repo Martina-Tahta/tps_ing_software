@@ -18,8 +18,4 @@ public class WildCard extends Card {
         return true;
     }
 
-    @Override
-    public UnoPlayer applyEffect(UnoGame game) {
-        return game.getTurnDirector().nextPlayer(game.getCurrentPlayerObject());
-    }
 }

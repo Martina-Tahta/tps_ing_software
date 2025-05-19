@@ -18,8 +18,17 @@ public class UnoPlayer {
     public int getAmountCards() {
         return this.cards.size();
     }
-    public Card throwCard() {
-        return this.cards.remove(0);
+    public Card throwCard(Card topCard, UnoGame game) {
+        for (int i = 0; i<this.getAmountCards(); i++) {
+            if (topCard.canStackOver(this.cards.get(i))) {
+                return this.cards.remove(0);
+            }
+        }
+        game.dealNCards(this, 1);
+        if (topCard.canStackOver(this.cards.getLast())) {
+            return this.cards.removeLast();
+        }
+        return null;
     }
 
     public void setRightPlayer(UnoPlayer player) { this.rightPlayer = player;}

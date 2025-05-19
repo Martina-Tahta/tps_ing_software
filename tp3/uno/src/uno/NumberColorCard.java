@@ -10,12 +10,8 @@ public class NumberColorCard extends Card {
     }
 
     @Override
-    public boolean canStackOver(Card other) {
-        if (other instanceof NumberColorCard) {
-            NumberColorCard o = (NumberColorCard) other;
-            return this.color.equals(o.color) || this.number == o.number;
-        }
-        return other instanceof WildCard;
+    public boolean canStackOver(Card newCard) {
+        return super.canStackOver(newCard) || newCard.equalsNumberColorCardNumber(this);
     }
 
 

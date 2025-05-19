@@ -7,8 +7,8 @@ public class ReverseCard extends SpecialColorCard {
     }
 
     @Override
-    public UnoPlayer applyEffect(UnoGame game) {
-        game.setTurnDirector(game.getTurnDirector().changeTurnDirection());
-        return game.getTurnDirector().nextPlayer(game.getCurrentPlayerObject());
+    public void applyEffect(UnoGame game) {
+        game.changeTurnDirector();
+        game.nextTurn();
     }
 }
