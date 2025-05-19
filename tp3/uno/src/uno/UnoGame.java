@@ -89,6 +89,11 @@ public class UnoGame {
         this.turnDirector = this.turnDirector.changeTurnDirection();
     }
 
+    public void setWildCardColor(String color) {
+        this.topCard.setColor(color);
+
+    }
+
     public boolean gameEnded() {
         return this.finishedGame;
     }

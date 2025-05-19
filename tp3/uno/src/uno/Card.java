@@ -3,12 +3,20 @@ package uno;
 public abstract class Card {
     protected String color;
 
+    public Card() {}
+    public Card(String color) {
+        this.color = color;
+    }
+
     public boolean canStackOver(Card newCard) {
-        return this.color == newCard.color;
+        System.out.println("Color actual: " + this.color);
+        return this.color.equals(newCard.color);
     }
     public boolean equals(Card otherCard) {
-        return this.color == otherCard.color;
+        return this.color.equals(otherCard.color);
     }
+
+    public void setColor(String color) {}
 
     protected boolean equalsSpecialColorCardType(SpecialColorCard specialColorCard) {return false;}
     protected boolean equalsNumberColorCardNumber(NumberColorCard numberColorCard){return false;}
