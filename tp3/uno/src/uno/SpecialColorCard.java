@@ -5,7 +5,7 @@ public abstract class SpecialColorCard extends Card {
 
     public SpecialColorCard(String color) {
         super(color);
-        System.out.println("Creada carta con color: " + color);
+        //System.out.println("Creada carta con color: " + color);
     }
 
     @Override

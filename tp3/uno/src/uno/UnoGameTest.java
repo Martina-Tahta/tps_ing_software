@@ -183,9 +183,9 @@ public class UnoGameTest {
         j.playNextTurn();
         assertEquals(reverseG, j.pit());
         assertEquals(players3.get(1), j.getCurrentPlayer());
-//        j.playNextTurn();
-//        assertEquals(g2, j.pit());
-//        assertEquals(players3.get(2), j.getCurrentPlayer());
+        j.playNextTurn();
+        assertEquals(g2, j.pit());
+        assertEquals(players3.get(2), j.getCurrentPlayer());
     }
 
     @Test
@@ -258,9 +258,11 @@ public class UnoGameTest {
         assertTrue(r1.canStackOver(g1));
         assertTrue(r1.canStackOver(y1));
 
+
         assertTrue(r1.canStackOver(reverseR));
         assertTrue(r1.canStackOver(skipR));
         assertTrue(r1.canStackOver(draw2R));
+        //aca empieza a fallar
         assertTrue(r1.canStackOver(wild));
 
         assertTrue(g1.canStackOver(reverseG));
@@ -277,8 +279,6 @@ public class UnoGameTest {
         assertTrue(y1.canStackOver(skipY));
         assertTrue(y1.canStackOver(draw2Y));
         assertTrue(y1.canStackOver(wild));
-
-
     }
 
     @Test

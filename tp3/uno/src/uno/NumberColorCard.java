@@ -1,11 +1,10 @@
 package uno;
 
 public class NumberColorCard extends Card {
-    protected String color;
     private int number;
 
     public NumberColorCard(String color, int number) {
-        this.color = color;
+        super(color);
         this.number = number;
     }
 
