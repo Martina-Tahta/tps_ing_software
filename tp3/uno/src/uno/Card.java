@@ -9,8 +9,6 @@ public abstract class Card {
     }
 
     public boolean canStackOver(Card newCard) {
-        //System.out.println("Color actual: " + this.color);
-        
         return this.color.equals(newCard.color);
     }
 

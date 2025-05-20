@@ -56,6 +56,9 @@ public class UnoGame {
     public String getCurrentPlayer() {
         return this.currentPlayer.getName();
     }
+    public UnoPlayer getCurrentPlayerObject() {
+        return this.currentPlayer;
+    }
 
     public void nextTurn() {
         this.currentPlayer = this.turnDirector.nextPlayer(this.currentPlayer);
@@ -75,14 +78,6 @@ public class UnoGame {
             this.nextTurn();
         }
         return this;
-    }
-
-    public void changeTurnDirector() {
-        this.turnDirector = this.turnDirector.changeTurnDirection();
-    }
-
-    public UnoPlayer getCurrentPlayerObject() {
-        return this.currentPlayer;
     }
 
     public void changeTurnDirection() {

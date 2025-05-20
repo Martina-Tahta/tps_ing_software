@@ -6,13 +6,14 @@ public class WildCard extends Card {
 
     public boolean canStackOver(Card newCard) {
         //return true;
-        return super.canStackOver(newCard) || newCard.equalsWildCard(this);
+        return newCard.equalsWildCard(this) || super.canStackOver(newCard) ;
     }
 
     @Override
     public boolean equalsNumberColorCardNumber(NumberColorCard card) { //para q cuando la carta con numero pregunte si puede apliar esta, lo deje
         return true;
     }
+    protected boolean equalsSpecialColorCardType(SpecialColorCard specialColorCard) {return true;}
 
     public boolean equals(Card otherCard) {
         // return super.equals(otherCard) && otherCard.equalsWildCard(this);

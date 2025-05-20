@@ -21,7 +21,7 @@ public class UnoPlayer {
     public Card throwCard(Card topCard, UnoGame game) {
         for (int i = 0; i<this.getAmountCards(); i++) {
             if (topCard.canStackOver(this.cards.get(i))) {
-                return this.cards.remove(0);
+                return this.cards.remove(i);
             }
         }
         game.dealNCards(this, 1);

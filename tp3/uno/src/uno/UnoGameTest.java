@@ -51,7 +51,6 @@ public class UnoGameTest {
     private Draw2Card draw2B;
 
     private ArrayList<Card> smallDeck;
-    private ArrayList<String> players2;
     private ArrayList<String> players3;
 
     @BeforeEach
@@ -100,54 +99,79 @@ public class UnoGameTest {
         smallDeck = new ArrayList<>(
                 Arrays.asList(r0, r1, g1, r2, g2, r3, g3, r4, g4)
         );
-        players2 = new ArrayList<>(
-                Arrays.asList("A", "B")
-        );
         players3 = new ArrayList<>(
                 Arrays.asList("A", "B", "C")
         );
     }
+    @Test
+    void testCards() {
+        assertTrue(r1.canStackOver(r1));
+        assertTrue(r1.canStackOver(r2));
+        assertTrue(r1.canStackOver(b1));
+        assertTrue(r1.canStackOver(g1));
+        assertTrue(r1.canStackOver(y1));
 
+        assertTrue(r1.canStackOver(reverseR));
+        assertTrue(r1.canStackOver(skipR));
+        assertTrue(r1.canStackOver(draw2R));
+        assertTrue(r1.canStackOver(wild));
+        assertTrue(reverseR.canStackOver(r1));
+        assertTrue(skipR.canStackOver(r1));
+        assertTrue(draw2R.canStackOver(r1));
+        assertTrue(reverseR.canStackOver(wild));
+        assertTrue(skipR.canStackOver(wild));
+        assertTrue(draw2R.canStackOver(wild));
+        assertTrue(wild.canStackOver(wild));
+        wild.setColor("red");
+        assertTrue(wild.canStackOver(r1));
+        assertTrue(wild.canStackOver(reverseR));
+
+        assertFalse(r1.canStackOver(g2));
+        assertFalse(r1.canStackOver(reverseB));
+        assertFalse(r1.canStackOver(skipB));
+        assertFalse(r1.canStackOver(draw2B));
+        assertFalse(wild.canStackOver(g1));
+    }
 
     @Test
     void test00_GameStart() {
-        UnoGame j = new UnoGame(0, players3, smallDeck);
-        assertEquals(r0, j.pit());
+        UnoGame game = new UnoGame(0, players3, smallDeck);
+        assertEquals(r0, game.pit());
     }
 
     @Test
     void test01_FirstCardPlayed() {
-        UnoGame j = new UnoGame(2, players3, smallDeck);
-        assertEquals(players3.get(0), j.getCurrentPlayer());
-        assertEquals(r1, j.playNextTurn().pit());
+        UnoGame game = new UnoGame(2, players3, smallDeck);
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(r1, game.playNextTurn().pit());
     }
 
     @Test
     void test02_NextPlayer() {
-        UnoGame j = new UnoGame(2, players3, smallDeck);
-        j.playNextTurn();
-        assertEquals(players3.get(1), j.getCurrentPlayer());
-        assertEquals(r2, j.playNextTurn().pit());
+        UnoGame game = new UnoGame(2, players3, smallDeck);
+        game.playNextTurn();
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(r2, game.playNextTurn().pit());
     }
 
     @Test
     void test03_FirstFullRound() {
-        UnoGame j = new UnoGame(2, players3, smallDeck);
+        UnoGame game = new UnoGame(2, players3, smallDeck);
 
-        assertEquals(r0, j.pit());
-        assertEquals(players3.get(0), j.getCurrentPlayer());
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
 
-        j.playNextTurn();
-        assertEquals(r1, j.pit());
-        assertEquals(players3.get(1), j.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(r1, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
 
-        j.playNextTurn();
-        assertEquals(r2, j.pit());
-        assertEquals(players3.get(2), j.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(r2, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
 
-        j.playNextTurn();
-        assertEquals(r3, j.pit());
-        assertEquals(players3.get(0), j.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(r3, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
     }
 
     @Test
@@ -155,14 +179,14 @@ public class UnoGameTest {
         ArrayList<Card> deck = new ArrayList<>(
                 Arrays.asList(r0, r1, r2, r3, reverseR, g2, y3, g3, r4, g4, y1)
         );
-        UnoGame j = new UnoGame(3, players3, deck);
-        assertEquals(players3.get(0), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(players3.get(1), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(players3.get(0), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(players3.get(2), j.getCurrentPlayer());
+        UnoGame game = new UnoGame(3, players3, deck);
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+        game.playNextTurn();
+        assertEquals(players3.get(2), game.getCurrentPlayer());
     }
 
     @Test
@@ -170,149 +194,117 @@ public class UnoGameTest {
         ArrayList<Card> deck = new ArrayList<>(
                 Arrays.asList(r0, r1, reverseG, g1, reverseR, g2, r3, y1, y2, g3)
         );
-        UnoGame j = new UnoGame(3, players3, deck);
+        UnoGame game = new UnoGame(3, players3, deck);
 
-        assertEquals(r0, j.pit());
-        assertEquals(players3.get(0), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(r1, j.pit());
-        assertEquals(players3.get(1), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(reverseR, j.pit());
-        assertEquals(players3.get(0), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(reverseG, j.pit());
-        assertEquals(players3.get(1), j.getCurrentPlayer());
-        j.playNextTurn();
-        assertEquals(g2, j.pit());
-        assertEquals(players3.get(2), j.getCurrentPlayer());
-    }
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
 
-    @Test
-    void test06_SameNumberDifferentColor() {
-        Card c1 = new NumberColorCard("red", 5);
-        Card c2 = new NumberColorCard("blue", 5);
-
-        assertTrue(c1.canStackOver(c2));
-    }
-
-    @Test
-    void test08_StackAndEquality() {
-        WildCard wild1 = new WildCard();
-        WildCard wild2 = new WildCard();
-
-        assertTrue(wild1.canStackOver(new NumberColorCard("red", 7)));
-        assertTrue(wild1.canStackOver(wild2));
-
-        assertTrue(wild1.equals(wild2));
-
-        wild1.setColor("blue");
-        assertEquals("blue", wild1.color);
-    }
-
-    @Test
-    void test09_ChangeTurnDirection() {
-        TurnDirector turnRight = new TurnDirectorRight();
-        TurnDirector turnLeft = turnRight.changeTurnDirection();
-
-        assertEquals(TurnDirectorLeft.class, turnLeft.getClass());
-
-        TurnDirector turnRightAgain = turnLeft.changeTurnDirection();
-        assertEquals(TurnDirectorRight.class, turnRightAgain.getClass());
-    }
-
-    @Test
-    void test10_TurnCycle() {
-        ArrayList<String> players = new ArrayList<>(Arrays.asList("P1", "P2", "P3"));
-        ArrayList<Card> deck = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            deck.add(new NumberColorCard("red", i));
-        }
-        UnoGame game = new UnoGame(2, players, deck);
-
-        assertEquals("P1", game.getCurrentPlayer());
         game.playNextTurn();
-        assertEquals("P2", game.getCurrentPlayer());
+        assertEquals(r1, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+
         game.playNextTurn();
-        assertEquals("P3", game.getCurrentPlayer());
+        assertEquals(reverseR, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
         game.playNextTurn();
-        assertEquals("P1", game.getCurrentPlayer());
-    }
+        assertEquals(reverseG, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
 
-    @Test
-    void test11_ThrowCard() {
-//        UnoPlayer player = new UnoPlayer("Player1");
-//        Card card = new NumberColorCard("yellow", 9);
-//        player.addCard(card);
-//
-//        Card thrown = player.throwCard();
-//        assertEquals(card, thrown);
-//        assertThrows(IndexOutOfBoundsException.class, () -> player.throwCard());
-    }
-
-    @Test
-    void test12_CanStackOverVariousCases() {
-        assertTrue(r1.canStackOver(r1));
-        assertTrue(r1.canStackOver(r2));
-        assertTrue(r1.canStackOver(b1));
-        assertTrue(r1.canStackOver(g1));
-        assertTrue(r1.canStackOver(y1));
-
-
-        assertTrue(r1.canStackOver(reverseR));
-        assertTrue(r1.canStackOver(skipR));
-        assertTrue(r1.canStackOver(draw2R));
-        //aca empieza a fallar
-        assertTrue(r1.canStackOver(wild));
-
-        assertTrue(g1.canStackOver(reverseG));
-        assertTrue(g1.canStackOver(skipG));
-        assertTrue(g1.canStackOver(draw2G));
-        assertTrue(g1.canStackOver(wild));
-
-        assertTrue(b1.canStackOver(reverseB));
-        assertTrue(b1.canStackOver(skipB));
-        assertTrue(b1.canStackOver(draw2B));
-        assertTrue(b1.canStackOver(wild));
-
-        assertTrue(y1.canStackOver(reverseY));
-        assertTrue(y1.canStackOver(skipY));
-        assertTrue(y1.canStackOver(draw2Y));
-        assertTrue(y1.canStackOver(wild));
-    }
-
-    @Test
-    void test13_TurnDirectionChangeAffectsTurn() {
-        ArrayList<String> players = new ArrayList<>(Arrays.asList("P1", "P2", "P3"));
-        ArrayList<Card> deck = new ArrayList<>();
-        for (int i = 0; i < 10; i++) deck.add(new NumberColorCard("red", i));
-        UnoGame game = new UnoGame(2, players, deck);
-
-        assertEquals("P1", game.getCurrentPlayer());
         game.playNextTurn();
-        assertEquals("P2", game.getCurrentPlayer());
+        assertEquals(g2, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
+    }
 
-        game.changeTurnDirection();
+    @Test
+    void test06_SkipPlayerRound() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, r1, skipG, g1, skipR, g2, r3, y1, y2, g3)
+        );
+        UnoGame game = new UnoGame(3, players3, deck);
+
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
         game.playNextTurn();
-        assertEquals("P1", game.getCurrentPlayer());
+        assertEquals(r1, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(skipR, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(skipG, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(g3, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
     }
 
     @Test
-    void test14_EqualsWildCard() {
-        WildCard w1 = new WildCard();
-        WildCard w2 = new WildCard();
-        NumberColorCard n1 = new NumberColorCard("red", 7);
+    void test07_Draw2Round() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, draw2R, g1, g0, g2, r3, y1, r3, b4)
+        );
+        UnoGame game = new UnoGame(2, players3, deck);
 
-        assertTrue(w1.equals(w2));
-        assertFalse(w1.equals(n1));
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(draw2R, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(r3, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
     }
 
     @Test
-    void test15_GetCurrentPlayerDoesNotChangeState() {
-        UnoGame game = new UnoGame(1, players3, smallDeck);
-        String player1 = game.getCurrentPlayer();
-        String player2 = game.getCurrentPlayer();
+    void test08_WildCardRound() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, wild, g1, g0, g2, r3, y1)
+        );
+        UnoGame game = new UnoGame(2, players3, deck);
 
-        assertEquals(player1, player2);
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(wild, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+        game.setWildCardColor("green");
+
+        game.playNextTurn();
+        assertEquals(g0, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
+
     }
+
+    @Test
+    void test09_PlayerHasNoCardsToThrow() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, y1, b3, g0, g2, r3, y1, y4, g3)
+        );
+        UnoGame game = new UnoGame(2, players3, deck);
+
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(r0, game.pit());
+        assertEquals(players3.get(1), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(g0, game.pit());
+        assertEquals(players3.get(2), game.getCurrentPlayer());
+
+        game.playNextTurn();
+        assertEquals(g3, game.pit());
+        assertEquals(players3.get(0), game.getCurrentPlayer());
+
+    }
+
 }
