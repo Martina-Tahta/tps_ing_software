@@ -9,18 +9,15 @@ public class NumberColorCard extends Card {
     }
 
     @Override
-    public boolean canStackOver(Card newCard) {
-        return super.canStackOver(newCard) || newCard.equalsNumberColorCardNumber(this);
+    public boolean equals(Card otherCard) {
+        return otherCard.acceptColor(this.color) && otherCard.equalNumber(this.number);
     }
-
+    protected boolean equalNumber(int otherNumber) {return this.number == otherNumber;}
 
     @Override
-    public boolean equalsNumberColorCardNumber(NumberColorCard numberColorCard) {
-        return this.number == numberColorCard.number;
+    public boolean canStackOver(Card newCard) {
+        return newCard.acceptColor(this.color) || newCard.acceptNumber(this.number);
     }
-
-    public boolean equals(Card otherCard) {
-        return super.equals(otherCard) && otherCard.equalsNumberColorCardNumber(this);
-    }
-
+    protected boolean acceptType(String otherType) {return false;}
+    protected boolean acceptNumber(int otherNumber) {return this.equalNumber(otherNumber);}
 }

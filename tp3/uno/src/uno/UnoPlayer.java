@@ -18,22 +18,19 @@ public class UnoPlayer {
     public int getAmountCards() {
         return this.cards.size();
     }
-    public Card throwCard(Card topCard, UnoGame game) {
-        for (int i = 0; i<this.getAmountCards(); i++) {
-            if (topCard.canStackOver(this.cards.get(i))) {
-                return this.cards.remove(i);
-            }
-        }
-        game.dealNCards(this, 1);
-        if (topCard.canStackOver(this.cards.getLast())) {
-            return this.cards.removeLast();
-        }
-        return null;
-    }
 
     public void setRightPlayer(UnoPlayer player) { this.rightPlayer = player;}
     public void setLeftPlayer(UnoPlayer player) { this.leftPlayer = player;}
 
     public UnoPlayer getRightPlayer() { return this.rightPlayer;}
     public UnoPlayer getLeftPlayer() { return this.leftPlayer;}
+
+    public boolean canThrowCard(Card card) {
+        if ((card.didPlayerSayUno() && this.getAmountCards()!=2) || (!card.didPlayerSayUno() && this.getAmountCards()==2)) {
+            return false;
+        }
+
+        return this.cards.stream().anyMatch(c -> c.equals(card));
+        //throw new Error("The current player doesn't have that card.");
+    }
 }

@@ -2,28 +2,26 @@ package uno;
 
 public class WildCard extends Card {
 
-    public void setColor(String color) {this.color = color;}
-
-    public boolean canStackOver(Card newCard) {
-        //return true;
-        return newCard.equalsWildCard(this) || super.canStackOver(newCard) ;
+    public Card setColor(String color) {
+        this.color = color;
+        return this;
     }
 
     @Override
-    public boolean equalsNumberColorCardNumber(NumberColorCard card) { //para q cuando la carta con numero pregunte si puede apliar esta, lo deje
-        return true;
-    }
-    protected boolean equalsSpecialColorCardType(SpecialColorCard specialColorCard) {return true;}
-
     public boolean equals(Card otherCard) {
-        // return super.equals(otherCard) && otherCard.equalsWildCard(this);
-        return otherCard.equalsWildCard(this);
+        return otherCard.isWildCard(this);
+    }
+    public boolean isWildCard(WildCard wildCard) {
+        return true;
     }
 
     @Override
-    public boolean equalsWildCard(WildCard wildCard) {
-        return true;
+    public boolean canStackOver(Card newCard) {
+        return newCard.acceptColor(this.color);
     }
+    protected boolean acceptColor(String otherColor) {return true;}
+    protected boolean acceptType(String otherType) {return true;}
+    protected boolean acceptNumber(int otherNumber) {return true;}
 
 }
 
