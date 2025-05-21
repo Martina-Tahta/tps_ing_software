@@ -7,7 +7,6 @@ import java.util.ArrayList;
 //  - el nextTurn se juega aca o desde test se llama a la funcion?
 //  - pensando en un juego online, no deberia poder pasar que un jugador tire una carta que no tiene no? osea deberiamos agarrar eso como excepcion? eso implicaria un if
 //  - al wildcard se le hace el wild.setColor() no?
-//  - esta mal agarrar el error con assertThrows(Error.class ...)?
 //  - habria que hacer que las cartas se creen de cierto color sin dar un string con el nombre no? sino que sea crear cartaRed o algo asi?
 //     - hacer esto cuando queremos ponerle un color al wildcard
 
@@ -80,20 +79,26 @@ public class UnoGame {
         }
 
         if (this.playerCanPlayCard(card)) {
+            this.topCard = card;
             if(this.currentPlayer.getAmountCards()==1) {
                 this.finishedGame = true;
                 this.winner = this.currentPlayer.getName();
                 return this;
             }
-            this.topCard = card;
-            this.topCard.noUno();
+
+            if ((card.didPlayerSayUno() && this.currentPlayer.getAmountCards()!=2) || (!card.didPlayerSayUno() && this.currentPlayer.getAmountCards()==2)) {
+                this.dealNCards(this.currentPlayer, 2);
+            }
+            this.currentPlayer.throwCard(card);
             card.applyEffect(this);
+            this.topCard.noUno();
         } else {
             this.dealNCards(this.currentPlayer, 2);
             this.nextTurn();
         }
         return this;
     }
+
 
     public void drawCard() {
         dealACard(this.currentPlayer);

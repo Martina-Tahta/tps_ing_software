@@ -26,11 +26,11 @@ public class UnoPlayer {
     public UnoPlayer getLeftPlayer() { return this.leftPlayer;}
 
     public boolean canThrowCard(Card card) {
-        if ((card.didPlayerSayUno() && this.getAmountCards()!=2) || (!card.didPlayerSayUno() && this.getAmountCards()==2)) {
-            return false;
-        }
-
         return this.cards.stream().anyMatch(c -> c.equals(card));
         //throw new Error("The current player doesn't have that card.");
+    }
+
+    public void throwCard(Card card){
+        this.cards.remove(card);
     }
 }

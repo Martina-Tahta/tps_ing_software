@@ -106,6 +106,7 @@ public class UnoGameTest {
                 Arrays.asList("A", "B", "C")
         );
     }
+
     @Test
     void testCards() {
         assertTrue(r1.canStackOver(r1));
@@ -151,7 +152,7 @@ public class UnoGameTest {
     @Test
     void test01_FirstCardPlayed() {
         UnoGame game = new UnoGame(3, players2, smallDeck);
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
         assertEquals(r1, game.play(r1).pit());
     }
 
@@ -181,20 +182,20 @@ public class UnoGameTest {
         assertEquals(r0, game.pit());
         game.play(g1);
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
         game.play(r2);
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
         game.play(r3);
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
     }
 
 
     @Test
     void test04_RoundChange() {
         ArrayList<Card> deck = new ArrayList<>(
-                Arrays.asList(r0, r1, r2, r3, reverseR, g2, y3, g3, r4, g4, y1)
+                Arrays.asList(r0, r1, r2, r3, r4, reverseR, g2, y3, g3, r4, g4, y1, y3)
         );
-        UnoGame game = new UnoGame(3, players3, deck);
+        UnoGame game = new UnoGame(4, players3, deck);
         assertEquals(players3.get(0), game.getCurrentPlayer());
         game.play(r1);
         assertEquals(players3.get(1), game.getCurrentPlayer());
@@ -207,9 +208,9 @@ public class UnoGameTest {
     @Test
     void test05_RoundChangeDouble() {
         ArrayList<Card> deck = new ArrayList<>(
-                Arrays.asList(r0, r1, reverseG, g1, reverseR, g2, r3, y1, y2, g3)
+                Arrays.asList(r0, r1, reverseG, g1, y4, reverseR, g2, r3, r4, y1, y2, g3, g4)
         );
-        UnoGame game = new UnoGame(3, players3, deck);
+        UnoGame game = new UnoGame(4, players3, deck);
 
         assertEquals(r0, game.pit());
         assertEquals(players3.get(0), game.getCurrentPlayer());
@@ -230,9 +231,9 @@ public class UnoGameTest {
     @Test
     void test06_SkipPlayerRound() {
         ArrayList<Card> deck = new ArrayList<>(
-                Arrays.asList(r0, r1, skipG, g1, skipR, g2, r3, y1, y2, g3)
+                Arrays.asList(r0, r1, skipG, g1, y2, skipR, g2, r3, y1, y2, g3, y4, r4)
         );
-        UnoGame game = new UnoGame(3, players3, deck);
+        UnoGame game = new UnoGame(4, players3, deck);
 
         assertEquals(r0, game.pit());
         assertEquals(players3.get(0), game.getCurrentPlayer());
@@ -258,13 +259,13 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(3, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(draw2R);
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
 
         game.play(r2);
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
     }
 
     @Test
@@ -275,13 +276,13 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(3, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(wild.setColor("green"));
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
 
         game.play(g2);
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
     }
 
     @Test
@@ -292,11 +293,11 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(3, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.drawCard();
         game.play(r4);
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
 
     }
 
@@ -308,11 +309,11 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(3, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.drawCard();
         game.pass();
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
         game.play(r3);
     }
 
@@ -324,26 +325,31 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(2, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(r1.uno());
         assertEquals(r1, game.pit());
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
     }
 
     @Test
     void test12_PlayerDoesntSayUno() {
         ArrayList<Card> deck = new ArrayList<>(
-                Arrays.asList(r0, r1, b3, g0, g2, y0, y1)
+                Arrays.asList(r0, r1, b3, g0, g1, y0, y1)
         );
         UnoGame game = new UnoGame(2, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(r1);
-        assertEquals(r0, game.pit());
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(r1, game.pit());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
+
+        game.play(g1.uno());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
+        game.play(y1);
+        assertEquals(y1, game.pit());
     }
 
     @Test
@@ -354,12 +360,13 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(2, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(wild.setColor("green").uno());
         assertEquals(wild, game.pit());
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
     }
+
     @Test
     void test14_PlayerThrowsWildCardAndSaysUnoCorrectlyOtherWay() {
         ArrayList<Card> deck = new ArrayList<>(
@@ -368,21 +375,32 @@ public class UnoGameTest {
         UnoGame game = new UnoGame(2, players2, deck);
 
         assertEquals(r0, game.pit());
-        assertEquals(players3.get(0), game.getCurrentPlayer());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
         game.play(wild.uno().setColor("green"));
         assertEquals(wild, game.pit());
-        assertEquals(players3.get(1), game.getCurrentPlayer());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
     }
 
-//    @Test
-//    void test13_PlayerPlaysNonExistentCard() {
-//        UnoGame game = new UnoGame(3, players2, smallDeck);
-//        assertEquals(r0, game.pit());
-//        assertThrows( Error.class, () -> game.play(r4) );
-//    }
+    @Test
+    void test14_PlayerWin() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, r1, g3, y0, g1, y0, y1)
+        );
+        UnoGame game = new UnoGame(2, players2, deck);
 
+        assertEquals(r0, game.pit());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
 
-    // cuando termina el juego (que diga que termino y que el winner sea el correcto)
+        game.play(r1.uno());
+        assertEquals(r1, game.pit());
+        assertEquals(players2.get(1), game.getCurrentPlayer());
 
+        game.play(g1.uno());
+        assertEquals(players2.get(0), game.getCurrentPlayer());
+
+        game.play(g3);
+        assertEquals(true, game.gameEnded());
+        assertEquals(players2.get(0), game.getWinner());
+    }
 }
