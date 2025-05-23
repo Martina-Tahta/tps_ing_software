@@ -9,8 +9,6 @@ public abstract class Card {
         this.color = color;
     }
 
-    public Card setColor(String color) {return this;}
-
     public abstract boolean equals(Card otherCard);
     protected boolean equalColor(String otherColor) {return this.color.equals(otherColor);}
     protected boolean equalType(String otherType) {return false;}

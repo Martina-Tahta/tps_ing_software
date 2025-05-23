@@ -27,7 +27,6 @@ public class UnoPlayer {
 
     public boolean canThrowCard(Card card) {
         assert this.cards.contains(card);
-        //throw new Error("The current player doesn't have that card.");
         return true;
     }
 

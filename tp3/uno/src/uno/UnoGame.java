@@ -2,13 +2,6 @@ package uno;
 
 import java.util.ArrayList;
 
-// Preguntas
-//  - puede agarrar u a carta cuando tiene otras que puede tirar?
-//  - el nextTurn se juega aca o desde test se llama a la funcion? esperas a que la interfaz te diga o ya sabe e; jugador?
-//  - al wildcard se le hace el wild.setColor() no?
-//  - habria que hacer que las cartas se creen de cierto color sin dar un string con el nombre no? sino que sea crear cartaRed o algo asi?
-//     - hacer esto cuando queremos ponerle un color al wildcard
-
 public class UnoGame {
     private boolean finishedGame = false;
     private Card topCard;

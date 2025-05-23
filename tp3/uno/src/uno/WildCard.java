@@ -1,9 +1,20 @@
 package uno;
 
 public class WildCard extends Card {
-
-    public Card setColor(String color) {
-        this.color = color;
+    public Card beRed() {
+        this.color = "red";
+        return this;
+    }
+    public Card beBlue() {
+        this.color = "blue";
+        return this;
+    }
+    public Card beGreen() {
+        this.color = "green";
+        return this;
+    }
+    public Card beYellow() {
+        this.color = "yellow";
         return this;
     }
 
