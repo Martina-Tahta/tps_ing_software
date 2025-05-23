@@ -26,8 +26,7 @@ public class UnoPlayer {
     public UnoPlayer getLeftPlayer() { return this.leftPlayer;}
 
     public boolean canThrowCard(Card card) {
-
-        return this.cards.stream().anyMatch(c -> c.equals(card));
+        assert this.cards.conteins(card);
         //throw new Error("The current player doesn't have that card.");
     }
 
