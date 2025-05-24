@@ -25,26 +25,21 @@ public class UnoGameTest {
     private NumberColorCard y2;
     private NumberColorCard y3;
     private NumberColorCard y4;
-    private NumberColorCard b0;
     private NumberColorCard b1;
-    private NumberColorCard b2;
     private NumberColorCard b3;
     private NumberColorCard b4;
 
     private WildCard wild;
     private SkipCard skipR;
     private SkipCard skipG;
-    private SkipCard skipY;
     private SkipCard skipB;
 
     private ReverseCard reverseR;
     private ReverseCard reverseG;
-    private ReverseCard reverseY;
     private ReverseCard reverseB;
 
     private Draw2Card draw2R;
     private Draw2Card draw2G;
-    private Draw2Card draw2Y;
     private Draw2Card draw2B;
 
     private ArrayList<Card> smallDeck;
@@ -71,9 +66,7 @@ public class UnoGameTest {
         y3 = new NumberColorCard("yellow", 3);
         y4 = new NumberColorCard("yellow", 4);
 
-        b0 = new NumberColorCard("blue", 0);
         b1 = new NumberColorCard("blue", 1);
-        b2 = new NumberColorCard("blue", 2);
         b3 = new NumberColorCard("blue", 3);
         b4 = new NumberColorCard("blue", 4);
 
@@ -81,17 +74,14 @@ public class UnoGameTest {
 
         skipR = new SkipCard("red");
         skipG = new SkipCard("green");
-        skipY = new SkipCard("yellow");
         skipB = new SkipCard("blue");
 
         reverseR = new ReverseCard("red");
         reverseG = new ReverseCard("green");
-        reverseY = new ReverseCard("yellow");
         reverseB = new ReverseCard("blue");
 
         draw2R = new Draw2Card("red");
         draw2G = new Draw2Card("green");
-        draw2Y = new Draw2Card("yellow");
         draw2B = new Draw2Card("blue");
 
         smallDeck = new ArrayList<>(
@@ -112,8 +102,7 @@ public class UnoGameTest {
         assertTrue(r1.canStackOver(r1));
         assertTrue(r1.canStackOver(r2));
         assertTrue(r1.canStackOver(b1));
-        assertTrue(r1.canStackOver(g1));
-        assertTrue(r1.canStackOver(y1));
+        assertTrue(b1.canStackOver(r1));
 
         assertTrue(r1.canStackOver(reverseR));
         assertTrue(r1.canStackOver(skipR));
@@ -122,25 +111,38 @@ public class UnoGameTest {
         assertTrue(reverseR.canStackOver(r1));
         assertTrue(skipR.canStackOver(r1));
         assertTrue(draw2R.canStackOver(r1));
+
         assertTrue(reverseR.canStackOver(reverseG));
         assertTrue(skipR.canStackOver(skipB));
         assertTrue(draw2R.canStackOver(draw2G));
+
+        assertTrue(reverseR.canStackOver(skipR));
+        assertTrue(skipR.canStackOver(reverseR));
+        assertTrue(reverseR.canStackOver(draw2R));
+        assertTrue(draw2R.canStackOver(reverseR));
+        assertTrue(skipR.canStackOver(draw2R));
+        assertTrue(draw2R.canStackOver(skipR));
 
         assertTrue(reverseR.canStackOver(wild));
         assertTrue(skipR.canStackOver(wild));
         assertTrue(draw2R.canStackOver(wild));
         assertTrue(wild.canStackOver(wild));
         assertTrue(wild.beRed().canStackOver(r1));
-        assertTrue(wild.canStackOver(reverseR));
+        assertTrue(wild.beRed().canStackOver(reverseR));
+        assertTrue(wild.beRed().canStackOver(skipR));
+        assertTrue(wild.beRed().canStackOver(draw2R));
 
         assertFalse(r1.canStackOver(g2));
         assertFalse(r1.canStackOver(reverseB));
+        assertFalse(reverseB.canStackOver(r1));
         assertFalse(r1.canStackOver(skipB));
+        assertFalse(skipB.canStackOver(r1));
         assertFalse(r1.canStackOver(draw2B));
+        assertFalse(draw2B.canStackOver(r1));
         assertFalse(reverseR.canStackOver(skipG));
-        assertFalse(skipR.canStackOver(reverseB));
+        assertFalse(skipR.canStackOver(draw2B));
         assertFalse(draw2R.canStackOver(reverseG));
-        assertFalse(wild.canStackOver(g1));
+        assertFalse(wild.beRed().canStackOver(g1));
     }
 
     @Test
@@ -271,9 +273,9 @@ public class UnoGameTest {
     @Test
     void test08_WildCardRound() {
         ArrayList<Card> deck = new ArrayList<>(
-                Arrays.asList(r0, wild, g1, g0, g2, r3, y1)
+                Arrays.asList(r0, wild, g1, g0, b1, g2, r3, y1, b3, y3, y4)
         );
-        UnoGame game = new UnoGame(3, players2, deck);
+        UnoGame game = new UnoGame(4, players2, deck);
 
         assertEquals(r0, game.pit());
         assertEquals(players2.get(0), game.getCurrentPlayer());
@@ -281,8 +283,11 @@ public class UnoGameTest {
         game.play(wild.beGreen());
         assertEquals(players2.get(1), game.getCurrentPlayer());
 
-        game.play(g2);
+        game.play(r3);
         assertEquals(players2.get(0), game.getCurrentPlayer());
+
+        game.play(g1);
+        assertEquals(players2.get(1), game.getCurrentPlayer());
     }
 
     @Test
@@ -348,6 +353,7 @@ public class UnoGameTest {
 
         game.play(g1.uno());
         assertEquals(players2.get(0), game.getCurrentPlayer());
+
         game.play(y1);
         assertEquals(y1, game.pit());
     }
@@ -398,6 +404,21 @@ public class UnoGameTest {
         assertEquals(r0, game.pit());
 
         assertThrows(AssertionError.class, () -> game.play(r4));
+        assertEquals(r0, game.pit());
+        game.play(r1);
+    }
+
+    @Test
+    void test16_DoubleErrorCardThrown() {
+        ArrayList<Card> deck = new ArrayList<>(
+                Arrays.asList(r0, r1, g3, y0, g1, y0, y1)
+        );
+        UnoGame game = new UnoGame(3, players2, deck);
+        assertEquals(r0, game.pit());
+
+        assertThrows(AssertionError.class, () -> game.play(r4));
+        assertEquals(r0, game.pit());
+        assertThrows(AssertionError.class, () -> game.play(r2));
         assertEquals(r0, game.pit());
         game.play(r1);
     }
