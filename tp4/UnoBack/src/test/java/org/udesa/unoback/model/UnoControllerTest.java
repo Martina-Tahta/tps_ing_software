@@ -1,5 +1,6 @@
 package org.udesa.unoback.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,13 +9,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+
+//curl -X POST "http://localhost:8080/newmatch?players=A&players=B" -H "Accept: application/json"
+//curl -X GET "http://localhost:8080/activecard/d2add54b-612b-4f49-9da0-0bf51b325eb2" -H "Accept: application/json"
+
 
 public class UnoControllerTest {
     @Autowired private MockMvc mockMvc;
@@ -26,30 +35,17 @@ public class UnoControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        return result.getResponse().getContentAsString();
-    }
-
-    @Test
-    public void newMatchTest() throws Exception {
-        mockMvc.perform(post("/newmatch")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("players", "A", "B"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(not(emptyOrNullString())));
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
+        //return result.getResponse().getContentAsString();
+        String raw = result.getResponse().getContentAsString();
+        // parsea el JSON string a String puro
+        return new ObjectMapper().readValue(raw, String.class);
     }
 
     @Test
     public void test01_NewMatchReturnsOkAndResponseNotEmpty() throws Exception {
-        mockMvc.perform(post("/newmatch")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("players", "Alice", "Bob"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(not(emptyOrNullString())));
+        String matchId = createMatch();
+        assertTrue(matchId != null);
+        UUID.fromString(matchId);
     }
 
     @Test
@@ -92,13 +88,14 @@ public class UnoControllerTest {
 
     @Test
     public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
+        //esto no funciona porque estamos repartiendo cartas random, no sabemos si tiene esa carta
         String matchId = createMatch();
 
         String cardJson = """
                 {
-                  "color": "red",
+                  "color": "Red",
                   "value": "5",
-                  "type": "NUMBER"
+                  "type": "NumberCard"
                 }
                 """;
 
@@ -109,6 +106,5 @@ public class UnoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("thrown")));
     }
+
 }
-
-
