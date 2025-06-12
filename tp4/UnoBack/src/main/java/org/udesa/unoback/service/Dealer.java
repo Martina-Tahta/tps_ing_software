@@ -11,8 +11,8 @@ import java.util.List;
 @Component
 public class Dealer {
 
-    public ArrayList<Card> fullDeck() {
-        ArrayList<Card> deck = new ArrayList<>();
+    public List<Card> fullDeck() {
+        List<Card> deck = new ArrayList<>();
         deck.addAll(cardsOn("Red"));
         deck.addAll(cardsOn("Blue"));
         deck.addAll(cardsOn("Green"));

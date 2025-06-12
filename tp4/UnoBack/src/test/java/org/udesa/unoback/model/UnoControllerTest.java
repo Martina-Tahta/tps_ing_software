@@ -35,9 +35,7 @@ public class UnoControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        //return result.getResponse().getContentAsString();
         String raw = result.getResponse().getContentAsString();
-        // parsea el JSON string a String puro
         return new ObjectMapper().readValue(raw, String.class);
     }
 
@@ -53,7 +51,7 @@ public class UnoControllerTest {
         mockMvc.perform(post("/newmatch")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is(400));
     }
 
     @Test
@@ -64,6 +62,13 @@ public class UnoControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    public void test04_PlayerHandFailsWithNoId() throws Exception {
+        mockMvc.perform(get("/playerhand/"))
+                .andDo(print())
+                .andExpect(status().is(400));
     }
 
     @Test
@@ -85,7 +90,9 @@ public class UnoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("drew")));
     }
+    //draw: jugador incorrecto
 
+    //play: jugador incorrect, no tiene la carta, no la puede jugar
     @Test
     public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
         //esto no funciona porque estamos repartiendo cartas random, no sabemos si tiene esa carta

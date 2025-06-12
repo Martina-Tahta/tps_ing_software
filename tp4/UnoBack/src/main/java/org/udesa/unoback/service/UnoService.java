@@ -16,14 +16,9 @@ public class UnoService {
     @Autowired private Dealer dealer;
     private HashMap<UUID, Match> matches = new HashMap<>();
 
-    public UUID newMatch(List<String> players, List<Card> deck) {
+    public UUID newMatch(List<String> players) {
         UUID newMatchID = UUID.randomUUID();
-        if (deck == null) {
-            matches.put(newMatchID, Match.fullMatch(dealer.fullDeck(), players));
-        }
-        else {
-            matches.put(newMatchID, Match.newReducedMatch(deck, players.toArray(new String[0])));
-        }
+        matches.put(newMatchID, Match.fullMatch(dealer.fullDeck(), players));
         return newMatchID;
     }
 
@@ -51,12 +46,12 @@ public class UnoService {
         match.drawCard(player);// runtime exception si el juego termino o no es el turno del jugador
     }
 
-    public void play(UUID matchId, String player, JsonCard card) {
+    public void play(UUID matchId, String player, Card card) {
         Match match = matches.get(matchId);
         if (match == null) {
             throw new RuntimeException("There is no match with id: " + matchId);
         }
-        match.play(player, card.asCard());
+        match.play(player, card);
 
     }
 }

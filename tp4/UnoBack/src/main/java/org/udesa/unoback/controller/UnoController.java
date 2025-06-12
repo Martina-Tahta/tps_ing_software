@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.udesa.unoback.model.Card;
 import org.udesa.unoback.model.JsonCard;
 import org.udesa.unoback.service.UnoService;
 
@@ -25,7 +26,7 @@ public class UnoController {
 
     @PostMapping("newmatch")
     public ResponseEntity newMatch(@RequestParam List<String> players ) {
-        return ResponseEntity.ok(unoService.newMatch(players, null));
+        return ResponseEntity.ok(unoService.newMatch(players));
     }
 
     @GetMapping("playerhand/{matchId}")
@@ -45,7 +46,9 @@ public class UnoController {
 
     @PostMapping("play/{matchId}/{player}")
     public ResponseEntity play(@PathVariable UUID matchId, @PathVariable String player, @RequestBody JsonCard card ) {
-        unoService.play(matchId, player, card);
+        Card realCard = card.asCard();// ver errores aca
+
+        unoService.play(matchId, player, realCard);
         return ResponseEntity.ok("The card has been thrown."); //ver que contestar aca
     }
 }

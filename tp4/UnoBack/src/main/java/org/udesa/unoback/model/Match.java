@@ -48,11 +48,11 @@ public class Match {
         Player player = status.player();
 
         if ( !player.hasCard( aCard ) ) {
-            throw new RuntimeException( NotACardInHand + playerName );
+            throw new IllegalArgumentException( NotACardInHand + playerName );
         }
 
         if ( !discardPileHead.acceptsOnTop( aCard ) ) {
-            throw new RuntimeException( CardDoNotMatch );
+            throw new IllegalArgumentException( CardDoNotMatch );
         }
 
         player.removeCard( aCard );
