@@ -17,12 +17,18 @@ public class UnoController {
     @Autowired
     UnoService unoService;
 
-    @ExceptionHandler(RuntimeException.class) //ver esto con los tests del controller
-    public ResponseEntity<String> handleRuntime(RuntimeException ex) {
+    @ExceptionHandler(IllegalArgumentException.class) //ver esto con los tests del controller
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ex.getMessage());
-        //return ResponseEntity.badRequest().body( "Error: " + exception.getMessage() );
+                .body("Internal model error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntime(RuntimeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("HTTP error: " + ex.getMessage());
     }
 
     @PostMapping("newmatch")

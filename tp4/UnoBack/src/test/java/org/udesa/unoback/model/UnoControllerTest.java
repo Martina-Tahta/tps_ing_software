@@ -94,7 +94,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(get("/playerhand/" + nonExistantId))
                 .andDo(print())
-                .andExpect(status().is(500));
+                .andExpect(status().is(400));
     }
 
 
@@ -120,7 +120,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(get("/activecard/" + nonExistantId))
                 .andDo(print())
-                .andExpect(status().is(500));
+                .andExpect(status().is(400));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(post("/draw/" + nonExistantId + "/Alice"))
                 .andDo(print())
-                .andExpect(status().is(500));
+                .andExpect(status().is(400));
     }
 
     @Test
@@ -171,25 +171,26 @@ public class UnoControllerTest {
     // - error formato json
     // - falta parametros: id, player, carta
     // - error modelo: id incorrecto, jugador incorrect, no tiene la carta, no la puede jugar
-//    @Test
-//    public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
-//        //esto no funciona porque estamos repartiendo cartas random, no sabemos si tiene esa carta
-//        String matchId = createMatch();
-//
-//        String cardJson = """
-//                {
-//                  "color": "Red",
-//                  "value": "5",
-//                  "type": "NumberCard"
-//                }
-//                """;
-//
-//        mockMvc.perform(post("/play/" + matchId + "/Alice")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(cardJson))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(containsString("thrown")));
-//    }
+    @Test
+    public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
+        //esto no funciona porque estamos repartiendo cartas random, no sabemos si tiene esa carta
+        String matchId = createMatch();
+
+        String cardJson = """
+                {
+                  "color": "Red",
+                  "number": "5",
+                  "type": "NumberCard",
+                  "status": true
+                }
+                """;
+
+        mockMvc.perform(post("/play/" + matchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+                //.andExpect(content().string(containsString("thrown")));
+    }
 
 }
