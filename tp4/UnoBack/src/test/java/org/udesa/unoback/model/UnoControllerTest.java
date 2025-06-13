@@ -1,19 +1,23 @@
 package org.udesa.unoback.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.udesa.unoback.service.Dealer;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,9 +30,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //curl -X GET "http://localhost:8080/playerhand/6189c910-2f60-4ab5-bccf-ddffdba6fb06" -H "Accept: application/json"
 //curl -X POST "http://localhost:8080/draw/57f7a395-1339-4fcf-89d3-3e0a54ebd150/A"
 
-
+//cambiar lo de error handle
 public class UnoControllerTest {
     @Autowired private MockMvc mockMvc;
+    @MockBean private Dealer dealer;
+
+    static Card RedOn( int n ) { return new NumberCard( "Red", n ); }
+    static Card BlueOn( int n ) { return new NumberCard( "Blue", n ); }
+    static Card YellowOn( int n ) { return new NumberCard( "Yellow", n ); }
+    static Card GreenOn( int n ) { return new NumberCard( "Green", n ); }
+    static Card red1 = RedOn( 1 );
+    static Card red2 = RedOn( 2 );
+    static Card red3 = RedOn( 3 );
+    static Card red4 = RedOn( 4 );
+    static Card red5 = RedOn( 5 );
+    static Card blue1 = BlueOn( 1 );
+    static Card blue2 = BlueOn( 2 );
+    static Card blue3 = BlueOn( 3 );
+    static Card green1 = GreenOn( 1 );
+    static Card green3 = GreenOn( 3 );
+    static Card green5 = GreenOn( 5 );
+    static Card yellow3 = YellowOn( 3 );
+    static Card yellow5 = YellowOn( 5 );
+
 
     private String createMatch() throws Exception {
         MvcResult result = mockMvc.perform(post("/newmatch")
@@ -39,6 +63,14 @@ public class UnoControllerTest {
 
         String raw = result.getResponse().getContentAsString();
         return new ObjectMapper().readValue(raw, String.class);
+    }
+
+
+
+    @BeforeEach
+    public void setUp() {
+        List<Card> deck = deck();
+        when(dealer.fullDeck()).thenReturn(deck);
     }
 
     @Test
@@ -173,15 +205,14 @@ public class UnoControllerTest {
     // - error modelo: id incorrecto, jugador incorrect, no tiene la carta, no la puede jugar
     @Test
     public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
-        //esto no funciona porque estamos repartiendo cartas random, no sabemos si tiene esa carta
         String matchId = createMatch();
 
         String cardJson = """
                 {
-                  "color": "Red",
-                  "number": "5",
+                  "color": "Blue",
+                  "number": "1",
                   "type": "NumberCard",
-                  "status": true
+                  "shout": false
                 }
                 """;
 
@@ -190,7 +221,12 @@ public class UnoControllerTest {
                         .content(cardJson))
                 .andDo(print())
                 .andExpect(status().isOk());
-                //.andExpect(content().string(containsString("thrown")));
     }
 
+    private static List<Card> deck() {
+        return List.of( red1,
+                blue1, blue2, green3, blue3, yellow3, red3, red4,
+                blue1, blue2, green3, blue3, yellow3, red3, red4,
+                green1, green5, red2, red4, red5);
+    }
 }

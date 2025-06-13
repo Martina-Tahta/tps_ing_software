@@ -17,7 +17,7 @@ public class UnoController {
     @Autowired
     UnoService unoService;
 
-    @ExceptionHandler(IllegalArgumentException.class) //ver esto con los tests del controller
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -48,14 +48,14 @@ public class UnoController {
     @PostMapping("draw/{matchId}/{player}")
     public ResponseEntity drawCard( @PathVariable UUID matchId, @PathVariable String player ) {
         unoService.drawCard(matchId, player);
-        return ResponseEntity.ok("");//"The player drew a card."); //ver que contestar aca
+        return ResponseEntity.ok("");
     }
 
     @PostMapping("play/{matchId}/{player}")
     public ResponseEntity play(@PathVariable UUID matchId, @PathVariable String player, @RequestBody JsonCard card ) {
-        Card realCard = card.asCard();// ver errores aca
+        Card realCard = card.asCard();// ver errores aca, falta test
 
         unoService.play(matchId, player, realCard);
-        return ResponseEntity.ok("");//"The card has been thrown."); //ver que contestar aca
+        return ResponseEntity.ok("");
     }
 }

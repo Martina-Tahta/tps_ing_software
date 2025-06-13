@@ -3,10 +3,8 @@ package org.udesa.unoback.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.udesa.unoback.model.Card;
-import org.udesa.unoback.model.JsonCard;
 import org.udesa.unoback.model.Match;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +41,7 @@ public class UnoService {
         if (match == null) {
             throw new RuntimeException("There is no match with id: " + matchId);
         }
-        match.drawCard(player);// runtime exception si el juego termino o no es el turno del jugador
+        match.drawCard(player);
     }
 
     public void play(UUID matchId, String player, Card card) {

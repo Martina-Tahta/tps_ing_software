@@ -12,16 +12,9 @@ public class JsonCard {
 
     public JsonCard() {}
     public JsonCard( String color, Integer number, String type, boolean shout ) {
-        //if color not ["Red", "Blue", "Yellow", "Green"]
         this.color = color;
-
-        // if number not in [0 .. 9]
         this.number = number;
-
-        //if type not [types que hay]
         this.type = type;
-
-        // if type not true o false --> creo que esto ya lo controla porque espera un boolean
         this.shout = shout;
     }
 
