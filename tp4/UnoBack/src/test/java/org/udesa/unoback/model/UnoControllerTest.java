@@ -222,6 +222,101 @@ public class UnoControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void test17_PlayCardFailsWithMalformedJson() throws Exception {
+        String matchId = createMatch();
+
+        String malformedJson = """
+            {
+              "color": "Blue",
+              "number": "1",
+              "type": "NumberCard"
+              // falta coma o cierre correcto (no se si esta bien)
+            """;
+
+        mockMvc.perform(post("/play/" + matchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(malformedJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test18_PlayCardFailsWithMissingParameters() throws Exception {
+        String cardJson = """
+            {
+              "color": "Red",
+              "number": "3",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void test19_PlayCardFailsWithInvalidMatchId() throws Exception {
+        UUID invalidMatchId = UUID.randomUUID();
+        String cardJson = """
+            {
+              "color": "Red",
+              "number": "3",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/" + invalidMatchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test20_PlayCardFailsWithInvalidPlayer() throws Exception {
+        String matchId = createMatch();
+        String cardJson = """
+            {
+              "color": "Red",
+              "number": "3",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/" + matchId + "/UnknownPlayer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void test21_PlayCardFailsWhenPlayerDoesNotHaveCardOrCannotPlayIt() throws Exception {
+        String matchId = createMatch();
+        String cardJson = """
+            {
+              "color": "Yellow",
+              "number": "5",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/" + matchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
+    }
+
+
     private static List<Card> deck() {
         return List.of( red1,
                 blue1, blue2, green3, blue3, yellow3, red3, red4,
