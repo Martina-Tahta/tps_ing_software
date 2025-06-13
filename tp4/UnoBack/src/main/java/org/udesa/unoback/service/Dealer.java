@@ -17,6 +17,7 @@ public class Dealer {
         deck.addAll(cardsOn("Blue"));
         deck.addAll(cardsOn("Green"));
         deck.addAll(cardsOn("Yellow"));
+        deck.addAll(List.of(new WildCard(), new WildCard(), new WildCard(),new WildCard()));
         Collections.shuffle(deck);
         return deck;
     }
@@ -32,12 +33,25 @@ public class Dealer {
                         new NumberCard(color, 7),
                         new NumberCard(color, 8),
                         new NumberCard(color, 9),
+                        new NumberCard(color, 1),
+                        new NumberCard(color, 2),
+                        new NumberCard(color, 3),
+                        new NumberCard(color, 4),
+                        new NumberCard(color, 5),
+                        new NumberCard(color, 6),
+                        new NumberCard(color, 7),
+                        new NumberCard(color, 8),
+                        new NumberCard(color, 9),
                         new SkipCard(color),
                         new Draw2Card(color),
                         new ReverseCard(color),
-                        new WildCard()
+                        new SkipCard(color),
+                        new Draw2Card(color),
+                        new ReverseCard(color)
         );
     }
+
+
 
 
 }

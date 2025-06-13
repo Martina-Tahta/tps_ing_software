@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Match {
+    public static String NotEnoughPlayers = "There should be at least 2 players";
+    public static String EmptyPlayers = "A player has no name";
     public static String NotACardInHand = "Not a card in hand of ";
     public static String CardDoNotMatch = "Card does not match Color, Number or Kind";
     private Function<GameStatus, GameStatus> reverseShift;
@@ -21,6 +23,15 @@ public class Match {
     }
 
     public Match( List<Card> deck, int cardsInHand, List<String> players ) {
+        if (players.size() <= 1) {
+            throw new IllegalArgumentException(NotEnoughPlayers);
+        }
+        for (String p : players) {
+            if (p.trim().isEmpty()) {
+                throw new IllegalArgumentException( EmptyPlayers );
+            }
+        }
+
         discardPileHead = deck.remove( 0 );
         nextShift = (status) -> status.right();
         reverseShift = (status) -> status.left();

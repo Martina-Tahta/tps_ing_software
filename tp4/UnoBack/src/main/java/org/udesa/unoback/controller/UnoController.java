@@ -22,6 +22,7 @@ public class UnoController {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ex.getMessage());
+        //return ResponseEntity.badRequest().body( "Error: " + exception.getMessage() );
     }
 
     @PostMapping("newmatch")
@@ -41,7 +42,7 @@ public class UnoController {
     @PostMapping("draw/{matchId}/{player}")
     public ResponseEntity drawCard( @PathVariable UUID matchId, @PathVariable String player ) {
         unoService.drawCard(matchId, player);
-        return ResponseEntity.ok("The player drew a card."); //ver que contestar aca
+        return ResponseEntity.ok("");//"The player drew a card."); //ver que contestar aca
     }
 
     @PostMapping("play/{matchId}/{player}")
@@ -49,6 +50,6 @@ public class UnoController {
         Card realCard = card.asCard();// ver errores aca
 
         unoService.play(matchId, player, realCard);
-        return ResponseEntity.ok("The card has been thrown."); //ver que contestar aca
+        return ResponseEntity.ok("");//"The card has been thrown."); //ver que contestar aca
     }
 }
