@@ -84,8 +84,8 @@ public class UnoControllerTest {
     public void test02_NewMatchFailsWithNoPlayers() throws Exception {
         mockMvc.perform(post("/newmatch")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andDo(print())
-                .andExpect(status().is(400));
+                        .andDo(print())
+                        .andExpect(status().is(400));
     }
 
     @Test
@@ -99,7 +99,6 @@ public class UnoControllerTest {
     @Test
     public void test04_NewMatchFailsWithOnePlayer() throws Exception {
         mockMvc.perform(post("/newmatch")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("players", "Alice"))
                 .andExpect(status().is(500));
     }
@@ -204,7 +203,7 @@ public class UnoControllerTest {
     // - falta parametros: id, player, carta
     // - error modelo: id incorrecto, jugador incorrect, no tiene la carta, no la puede jugar
     @Test
-    public void test06_PlayCardReturnsConfirmationMessage() throws Exception {
+    public void test16_PlayCardReturnsConfirmationMessage() throws Exception {
         String matchId = createMatch();
 
         String cardJson = """

@@ -28,7 +28,7 @@ public class UnoController {
     public ResponseEntity<String> handleRuntime(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("HTTP error: " + ex.getMessage());
+                .body("Given parameters error: " + ex.getMessage());
     }
 
     @PostMapping("newmatch")
@@ -53,7 +53,7 @@ public class UnoController {
 
     @PostMapping("play/{matchId}/{player}")
     public ResponseEntity play(@PathVariable UUID matchId, @PathVariable String player, @RequestBody JsonCard card ) {
-        Card realCard = card.asCard();// ver errores aca, falta test
+        Card realCard = card.asCard();
 
         unoService.play(matchId, player, realCard);
         return ResponseEntity.ok("");
