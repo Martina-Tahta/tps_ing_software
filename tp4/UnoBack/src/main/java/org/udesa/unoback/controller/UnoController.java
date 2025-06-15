@@ -20,8 +20,7 @@ public class UnoController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Internal model error: " + ex.getMessage());
+                .badRequest().body( "Error: " + ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

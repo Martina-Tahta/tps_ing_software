@@ -24,12 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 
-//curl -X POST "http://localhost:8080/newmatch?players=A&players=B" -H "Accept: application/json"
-//curl -X GET "http://localhost:8080/activecard/6189c910-2f60-4ab5-bccf-ddffdba6fb06" -H "Accept: application/json"
-//curl -X GET "http://localhost:8080/playerhand/6189c910-2f60-4ab5-bccf-ddffdba6fb06" -H "Accept: application/json"
-//curl -X POST "http://localhost:8080/draw/57f7a395-1339-4fcf-89d3-3e0a54ebd150/A"
 
-//cambiar lo de error handle
 public class UnoControllerTest {
     @Autowired private MockMvc mockMvc;
     @MockBean private Dealer dealer;
@@ -84,7 +79,7 @@ public class UnoControllerTest {
         mockMvc.perform(post("/newmatch")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                         .andDo(print())
-                        .andExpect(status().is(400));
+                        .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -92,14 +87,14 @@ public class UnoControllerTest {
         mockMvc.perform(post("/newmatch")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("players", "", ""))
-                .andExpect(status().is(500));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void test04_NewMatchFailsWithOnePlayer() throws Exception {
         mockMvc.perform(post("/newmatch")
                         .param("players", "Alice"))
-                .andExpect(status().is(500));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -124,7 +119,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(get("/playerhand/" + nonExistantId))
                 .andDo(print())
-                .andExpect(status().is(400));
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -150,7 +145,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(get("/activecard/" + nonExistantId))
                 .andDo(print())
-                .andExpect(status().is(400));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -183,7 +178,7 @@ public class UnoControllerTest {
         UUID nonExistantId = UUID.randomUUID();
         mockMvc.perform(post("/draw/" + nonExistantId + "/Alice"))
                 .andDo(print())
-                .andExpect(status().is(400));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -192,15 +187,9 @@ public class UnoControllerTest {
 
         mockMvc.perform(post("/draw/" + matchId + "/A"))
                 .andDo(print())
-                .andExpect(status().is(500));
+                .andExpect(status().isBadRequest());
     }
 
-
-
-    //play:
-    // - error formato json
-    // - falta parametros: id, player, carta
-    // - error modelo: id incorrecto, jugador incorrect, no tiene la carta, no la puede jugar
     @Test
     public void test16_PlayCardReturnsConfirmationMessage() throws Exception {
         String matchId = createMatch();
@@ -229,13 +218,28 @@ public class UnoControllerTest {
             {
               "color": "Blue",
               "number": "1",
-              "type": "NumberCard"
-              // falta coma o cierre correcto (no se si esta bien)
+              "type": "NumberCard",
+              "shout": false
             """;
 
         mockMvc.perform(post("/play/" + matchId + "/Alice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(malformedJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        String malformedJson2 = """
+            {
+              "color": "Blue",
+              "number": "red",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/" + matchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(malformedJson2))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -293,11 +297,11 @@ public class UnoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(cardJson))
                 .andDo(print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void test21_PlayCardFailsWhenPlayerDoesNotHaveCardOrCannotPlayIt() throws Exception {
+    public void test21_PlayCardFailsWhenPlayerDoesNotHaveCard() throws Exception {
         String matchId = createMatch();
         String cardJson = """
             {
@@ -312,7 +316,26 @@ public class UnoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(cardJson))
                 .andDo(print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test22_PlayCardFailsWhenPlayerCannotPlayCard() throws Exception {
+        String matchId = createMatch();
+        String cardJson = """
+            {
+              "color": "Blue",
+              "number": "2",
+              "type": "NumberCard",
+              "shout": false
+            }
+            """;
+
+        mockMvc.perform(post("/play/" + matchId + "/Alice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
 
