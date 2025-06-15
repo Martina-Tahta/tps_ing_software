@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -131,6 +130,17 @@ public class UnoServiceTest {
 
         assertThrowsLike( GameOver.GameOver, () -> unoService.drawCard(id, "B" ) );
         assertThrowsLike( GameOver.GameOver, () -> unoService.play(id, "B", red3 ) );
+    }
+
+    @Test public void handleVariousMatches() {
+        UUID id = unoService.newMatch(List.of("A", "B"));
+        UUID id2 = unoService.newMatch(List.of("C", "D"));
+
+        assertNotNull(unoService.getActiveCard(id));
+        assertNotNull(unoService.getActiveCard(id2));
+
+        unoService.play(id, "A", blue1);
+        unoService.play(id2, "C", red3);
     }
 
     private static List<Card> deck() {

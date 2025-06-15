@@ -17,17 +17,10 @@ public class UnoController {
     @Autowired
     UnoService unoService;
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity
-                .badRequest().body( "Error: " + ex.getMessage());
-    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntime(RuntimeException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Given parameters error: " + ex.getMessage());
+        return ResponseEntity.badRequest().body( "Error: " + ex.getMessage());
     }
 
     @PostMapping("newmatch")

@@ -45,8 +45,12 @@ public class UnoControllerTest {
     static Card green3 = GreenOn( 3 );
     static Card green5 = GreenOn( 5 );
     static Card yellow3 = YellowOn( 3 );
-    static Card yellow5 = YellowOn( 5 );
 
+    @BeforeEach
+    public void setUp() {
+        List<Card> deck = deck();
+        when(dealer.fullDeck()).thenReturn(deck);
+    }
 
     private String createMatch() throws Exception {
         MvcResult result = mockMvc.perform(post("/newmatch")
@@ -57,14 +61,6 @@ public class UnoControllerTest {
 
         String raw = result.getResponse().getContentAsString();
         return new ObjectMapper().readValue(raw, String.class);
-    }
-
-
-
-    @BeforeEach
-    public void setUp() {
-        List<Card> deck = deck();
-        when(dealer.fullDeck()).thenReturn(deck);
     }
 
     @Test
